@@ -195,7 +195,7 @@ function initCheckoutFromStorage() {
 }
 
 /* ---------- Razorpay ---------- */
-var RAZORPAY_KEY_ID = 'rzp_test_TaN7iMrpJw7tuC';
+var RAZORPAY_KEY_ID = 'rzp_live_TNBr7uq276OFVi';
 
 function parseAmountToCents(priceStr) {
   var clean = String(priceStr).replace(/[^0-9.]/g, '');
