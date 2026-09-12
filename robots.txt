@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /checkout.html
 
-Sitemap: https://cliporbits.com/sitemap.xml
+Sitemap: https://www.cliporbits.com/sitemap.xml
