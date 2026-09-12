@@ -112,6 +112,20 @@ function closeLeadModal() {
   document.body.style.overflow = '';
 }
 
+/* ---------- Make.com automation: lead capture + payment sync to Google Sheet ---------- */
+var MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/jblxlxgjkjntcqc7k1te6h4yhq21yttk';
+
+function sendToWebhook(payload) {
+  try {
+    fetch(MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function () {});
+  } catch (err) {}
+}
+
 function submitLeadForm(e) {
   e.preventDefault();
   var lead = {
@@ -123,11 +137,24 @@ function submitLeadForm(e) {
     package: currentOrder.name,
     price: currentOrder.price
   };
-  // In production: POST `lead` to your Make.com webhook here so it lands in your Google Sheet / CRM.
   try {
     sessionStorage.setItem('clipOrbitsLead', JSON.stringify(lead));
     sessionStorage.setItem('clipOrbitsOrder', JSON.stringify(currentOrder));
   } catch (err) {}
+
+  sendToWebhook({
+    event: 'Lead',
+    name: lead.name,
+    email: lead.email,
+    phone: lead.phone,
+    link: lead.link,
+    niche: lead.niche,
+    package: lead.package,
+    price: lead.price,
+    payment_id: '',
+    source_page: document.body.getAttribute('data-page') || ''
+  });
+
   window.location.href = 'checkout.html';
   return false;
 }
@@ -212,8 +239,24 @@ function payWithRazorpay() {
 function showPaymentSuccess(response, lead) {
   document.getElementById('checkoutPaymentPanel').hidden = true;
   document.getElementById('checkoutSuccessPanel').hidden = false;
+  var paymentId = response && response.razorpay_payment_id ? response.razorpay_payment_id : '';
   document.getElementById('checkoutSuccessDetail').textContent =
-    'Payment ID ' + (response && response.razorpay_payment_id ? response.razorpay_payment_id : '') + ' — a confirmation has been sent to ' + ((lead && lead.email) || 'your email') + '.';
-  // In production: verify response.razorpay_payment_id / order_id / signature on your backend
-  // before treating this order as paid, then trigger your Make.com automation from there.
+    'Payment ID ' + paymentId + ' — a confirmation has been sent to ' + ((lead && lead.email) || 'your email') + '.';
+
+  var order = window.currentOrder || { name: 'Channel Audit', price: '$25' };
+  lead = lead || {};
+  sendToWebhook({
+    event: 'Payment',
+    name: lead.name || '',
+    email: lead.email || '',
+    phone: lead.phone || '',
+    link: lead.link || '',
+    niche: lead.niche || '',
+    package: order.name,
+    price: order.price,
+    payment_id: paymentId,
+    source_page: 'Checkout'
+  });
+  // In production: also verify response.razorpay_payment_id / order_id / signature on your
+  // backend before treating this order as paid — this client-side event is for CRM/sheet sync only.
 }
