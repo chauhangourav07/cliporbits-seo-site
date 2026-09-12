@@ -222,21 +222,16 @@
   .campaign-notes li{margin-bottom:6px;}
 
   /* ---------- Campaign carousel ---------- */
-  .carousel-wrap{position:relative; max-width:1180px; margin:0 auto;}
+  .carousel-wrap{position:relative; max-width:820px; margin:0 auto;}
   .carousel-track{
-    display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
-    -webkit-overflow-scrolling:touch;
+    display:flex; gap:0; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch; border-radius:var(--radius-l); box-shadow:var(--shadow);
+    border:1px solid var(--border);
   }
   .carousel-track::-webkit-scrollbar{display:none;}
   .carousel-track{scrollbar-width:none; -ms-overflow-style:none;}
-  .carousel-slide{
-    flex:0 0 calc(50% - 9px); scroll-snap-align:start; min-width:0; border-radius:var(--radius-l);
-    box-shadow:var(--shadow); border:1px solid var(--border); overflow:hidden;
-  }
+  .carousel-slide{flex:0 0 100%; scroll-snap-align:center; min-width:0;}
   .carousel-slide img{width:100%; display:block;}
-  @media (max-width:700px){
-    .carousel-slide{flex:0 0 100%; scroll-snap-align:center;}
-  }
   .carousel-arrow{
     position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%;
     background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow); cursor:pointer;
