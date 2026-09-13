@@ -126,13 +126,13 @@
     <p class="prose" style="color:var(--ink-muted);">No support ticket queue. No account manager standing between you and an answer. Send a message and we'll get back to you within 24 hours &mdash; all inquiries are personally reviewed by Gourav.</p>
 
     <div class="grid grid-2" style="margin-top:28px; align-items:start;">
-      <form class="lead" onsubmit="return fakeSubmit(event,'contact')">
-        <label>Full Name <input type="text" placeholder="Your name" required></label>
-        <label>Email Address <input type="email" placeholder="you@channel.com" required></label>
-        <label>YouTube Video URL <input type="text" placeholder="youtube.com/@yourchannel"></label>
-        <label>Message <textarea placeholder="What's your question?" required></textarea></label>
+      <form class="lead" id="contactForm" onsubmit="return submitContactForm(event)">
+        <label>Full Name <input type="text" id="contactName" placeholder="Your name" required></label>
+        <label>Email Address <input type="email" id="contactEmail" placeholder="you@channel.com" required></label>
+        <label>YouTube Video URL <input type="text" id="contactLink" placeholder="youtube.com/@yourchannel"></label>
+        <label>Message <textarea id="contactMessage" placeholder="What's your question?" required></textarea></label>
         <button class="btn btn-primary" type="submit">Send Message &rarr;</button>
-        <div class="form-note" id="note-contact">Thanks! This is a design preview &mdash; connect this form to your inbox/CRM to go live.</div>
+        <div class="form-note" id="note-contact">Thanks &mdash; your message is in. Gourav personally reviews every inquiry and replies within 24 hours.</div>
       </form>
 
       <div class="card">
@@ -200,7 +200,6 @@
     </div>
     <div class="footer-bottom">
       <span>&copy; 2026 ClipOrbits. All rights reserved. &middot; contact@cliporbits.com</span>
-      <span class="preview-note">LIVE DESIGN PREVIEW &mdash; content &amp; layout only, not connected to checkout</span>
     </div>
   </div>
 </footer>

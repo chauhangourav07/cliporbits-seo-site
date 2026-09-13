@@ -46,14 +46,12 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape' && modal && !modal.hidden) closeLeadModal();
 });
 
-function fakeSubmit(e, id) {
-  e.preventDefault();
+function showFormNote(id) {
   var note = document.getElementById('note-' + id);
   if (note) {
     note.classList.add('show');
     setTimeout(function () { note.classList.remove('show'); }, 6000);
   }
-  return false;
 }
 
 /* ---------- Campaign carousel (homepage only; guarded) ---------- */
@@ -156,6 +154,32 @@ function submitLeadForm(e) {
   });
 
   window.location.href = 'checkout.html';
+  return false;
+}
+
+function submitContactForm(e) {
+  e.preventDefault();
+  var name = document.getElementById('contactName').value;
+  var email = document.getElementById('contactEmail').value;
+  var link = document.getElementById('contactLink').value;
+  var message = document.getElementById('contactMessage').value;
+
+  sendToWebhook({
+    event: 'Contact',
+    name: name,
+    email: email,
+    phone: '',
+    link: link,
+    niche: '',
+    package: 'Contact Form',
+    price: '',
+    payment_id: '',
+    source_page: document.body.getAttribute('data-page') || 'Contact',
+    message: message
+  });
+
+  document.getElementById('contactForm').reset();
+  showFormNote('contact');
   return false;
 }
 
