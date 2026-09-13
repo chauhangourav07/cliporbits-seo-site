@@ -5,7 +5,9 @@
 // the Razorpay Checkout options.
 
 const CATALOG = {
-  audit: { name: 'Channel Audit', amount: 2500, currency: 'USD' },
+  // TEMPORARY LIVE PAYMENT TEST — amount set to ₹2 for a real end-to-end funnel check.
+  // MUST be reverted to { name: 'Channel Audit', amount: 2500, currency: 'USD' } right after.
+  audit: { name: 'Channel Audit', amount: 200, currency: 'INR' },
   starter_push: { name: 'Starter Push', amount: 4900, currency: 'USD' },
   growth_push: { name: 'Growth Push', amount: 19900, currency: 'USD' },
   starter_growth: { name: 'Starter Growth (Monthly Retainer)', amount: 34900, currency: 'USD' },
