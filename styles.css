@@ -348,6 +348,7 @@
     align-self:flex-start; background:var(--accent); color:#fff; font-size:.7rem; font-weight:600;
     letter-spacing:.04em; text-transform:uppercase; padding:4px 10px; border-radius:20px; margin-bottom:12px;
   }
+  .offer-tag.offer-tag-muted{background:transparent; color:rgba(246,249,252,.55); border:1px solid rgba(246,249,252,.25);}
   .offer-name{font-size:1.05rem; font-weight:600; margin-bottom:4px;}
   .offer-sub{font-size:.85rem; color:var(--ink-muted); margin-bottom:14px;}
   .offer-price{font-family:var(--font-mono); font-size:2.1rem; font-weight:600; color:var(--accent-dark); font-variant-numeric:tabular-nums; line-height:1;}
