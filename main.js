@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   initCheckoutFromStorage();
+  captureUtmParams();
 });
 
 document.addEventListener('keydown', function (e) {
@@ -95,6 +96,7 @@ function openLeadModal(name, price, prefillLink, prefillEmail) {
   if (prefillEmail) document.getElementById('leadEmail').value = prefillEmail;
   document.getElementById('leadModal').hidden = false;
   document.body.style.overflow = 'hidden';
+  trackEvent('begin_checkout', { package: name });
 }
 
 function openLeadModalFromForm(e, formEl, name, price) {
@@ -110,7 +112,10 @@ function closeLeadModal() {
   document.body.style.overflow = '';
 }
 
-/* ---------- Make.com automation: lead capture + payment sync to Google Sheet ---------- */
+/* ---------- Make.com automation: lead capture sync to Google Sheet ---------- */
+/* NOTE: the Payment event is no longer sent from here — it is fired server-side by
+   /api/verify-payment.js only after the Razorpay signature has been verified, so a
+   client can no longer forge a "payment succeeded" webhook call. */
 var MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/jblxlxgjkjntcqc7k1te6h4yhq21yttk';
 
 function sendToWebhook(payload) {
@@ -122,6 +127,44 @@ function sendToWebhook(payload) {
       keepalive: true
     }).catch(function () {});
   } catch (err) {}
+}
+
+/* ---------- GA4 event helper (never send PII as event params) ---------- */
+function trackEvent(name, params) {
+  try {
+    if (typeof gtag === 'function') gtag('event', name, params || {});
+  } catch (err) {}
+}
+
+/* ---------- UTM capture: first-touch (kept forever) + last-touch (refreshed each visit) ---------- */
+function captureUtmParams() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'];
+    var current = {};
+    var found = false;
+    keys.forEach(function (k) {
+      var v = params.get(k);
+      if (v) { current[k] = v; found = true; }
+    });
+    if (found) {
+      current.landing_page = window.location.pathname;
+      current.timestamp = new Date().toISOString();
+      localStorage.setItem('clipOrbitsUtmLast', JSON.stringify(current));
+      if (!localStorage.getItem('clipOrbitsUtmFirst')) {
+        localStorage.setItem('clipOrbitsUtmFirst', JSON.stringify(current));
+      }
+    }
+  } catch (err) {}
+}
+
+function getUtmData() {
+  var data = { first_touch: {}, last_touch: {} };
+  try {
+    data.first_touch = JSON.parse(localStorage.getItem('clipOrbitsUtmFirst') || '{}');
+    data.last_touch = JSON.parse(localStorage.getItem('clipOrbitsUtmLast') || '{}');
+  } catch (err) {}
+  return data;
 }
 
 function submitLeadForm(e) {
@@ -140,6 +183,7 @@ function submitLeadForm(e) {
     sessionStorage.setItem('clipOrbitsOrder', JSON.stringify(currentOrder));
   } catch (err) {}
 
+  var utm = getUtmData();
   sendToWebhook({
     event: 'Lead',
     name: lead.name,
@@ -150,8 +194,11 @@ function submitLeadForm(e) {
     package: lead.package,
     price: lead.price,
     payment_id: '',
-    source_page: document.body.getAttribute('data-page') || ''
+    source_page: document.body.getAttribute('data-page') || '',
+    utm_first_touch: utm.first_touch,
+    utm_last_touch: utm.last_touch
   });
+  trackEvent('lead', { package: lead.package });
 
   window.location.href = 'checkout.html';
   return false;
@@ -218,69 +265,144 @@ function initCheckoutFromStorage() {
   }
 }
 
-/* ---------- Razorpay ---------- */
-var RAZORPAY_KEY_ID = 'rzp_live_TNBr7uq276OFVi';
+/* ---------- Razorpay ----------
+   Order creation and price resolution happen server-side (/api/create-order) so a client
+   can never dictate the amount charged; payment success is only trusted after
+   /api/verify-payment recomputes and checks the Razorpay HMAC signature. */
+
+/* Maps the display name already used across the site's buttons to the server's product
+   catalog key. The server — not this map — is what determines the amount charged. */
+var PRODUCT_CATALOG = {
+  'Channel Audit': 'audit',
+  'Starter Push': 'starter_push',
+  'Growth Push': 'growth_push',
+  'Starter Growth (Monthly Retainer)': 'starter_growth',
+  'Managed Growth (Monthly Retainer)': 'managed_growth',
+  'Full Channel Partner (Monthly Retainer)': 'full_channel_partner'
+};
+
+function setCheckoutNote(message) {
+  var note = document.getElementById('note-checkout');
+  if (!note) return;
+  note.textContent = message;
+  note.classList.add('show');
+}
+
+function payWithRazorpay() {
+  var order = window.currentOrder || { name: 'Channel Audit', price: '$25' };
+  var lead = window.currentLead || {};
+  var productId = PRODUCT_CATALOG[order.name];
+
+  if (!productId) {
+    setCheckoutNote('We could not match your package to a valid product. Please start again from the Audit, Promote, or Growth Plans page.');
+    return false;
+  }
+  if (typeof Razorpay === 'undefined') {
+    setCheckoutNote("Razorpay's checkout script did not load — check your connection and try again, or message us on WhatsApp to complete your order.");
+    return false;
+  }
+
+  var payBtn = document.getElementById('checkoutPayBtn');
+  if (payBtn) payBtn.disabled = true;
+  setCheckoutNote('Preparing your secure payment...');
+
+  fetch('/api/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ product_id: productId })
+  })
+    .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+    .then(function (result) {
+      if (payBtn) payBtn.disabled = false;
+      if (!result.ok) {
+        setCheckoutNote(result.data && result.data.error ? result.data.error : 'Could not start your order. Please try again.');
+        return;
+      }
+      openRazorpayCheckout(result.data, productId, lead);
+    })
+    .catch(function () {
+      if (payBtn) payBtn.disabled = false;
+      setCheckoutNote('Could not reach the payment server. Please check your connection and try again.');
+    });
+
+  return false;
+}
+
+function openRazorpayCheckout(orderData, productId, lead) {
+  var options = {
+    key: orderData.key_id,
+    amount: orderData.amount,
+    currency: orderData.currency,
+    order_id: orderData.order_id,
+    name: 'ClipOrbits',
+    description: orderData.product_name,
+    prefill: { name: lead.name || '', email: lead.email || '', contact: lead.phone || '' },
+    notes: { youtube_link: lead.link || '', niche: lead.niche || '', package: orderData.product_name },
+    theme: { color: '#1663D6' },
+    handler: function (response) { verifyAndShowSuccess(response, lead, productId, orderData); },
+    modal: { ondismiss: function () { setCheckoutNote('Payment window closed. You can try again whenever you are ready.'); } }
+  };
+
+  var rzp = new Razorpay(options);
+  rzp.on('payment.failed', function (response) {
+    setCheckoutNote('Payment failed: ' + (response.error && response.error.description ? response.error.description : 'please try again.'));
+  });
+  rzp.open();
+}
+
+function verifyAndShowSuccess(response, lead, productId, orderData) {
+  setCheckoutNote('Verifying your payment...');
+  var utm = getUtmData();
+
+  fetch('/api/verify-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      razorpay_order_id: response.razorpay_order_id,
+      razorpay_payment_id: response.razorpay_payment_id,
+      razorpay_signature: response.razorpay_signature,
+      product_id: productId,
+      product_name: orderData.product_name,
+      lead: lead || {},
+      utm_first_touch: utm.first_touch,
+      utm_last_touch: utm.last_touch
+    })
+  })
+    .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+    .then(function (result) {
+      if (result.ok && result.data && result.data.verified) {
+        showPaymentSuccess(response.razorpay_payment_id, lead, orderData);
+      } else {
+        setCheckoutNote(
+          'We could not automatically verify this payment. If money was deducted, please message us on WhatsApp with Payment ID ' +
+          response.razorpay_payment_id + ' so we can confirm it manually.'
+        );
+      }
+    })
+    .catch(function () {
+      setCheckoutNote(
+        'We could not reach our server to verify this payment. If money was deducted, please message us on WhatsApp with Payment ID ' +
+        response.razorpay_payment_id + ' so we can confirm it manually.'
+      );
+    });
+}
+
+function showPaymentSuccess(paymentId, lead, orderData) {
+  document.getElementById('checkoutPaymentPanel').hidden = true;
+  document.getElementById('checkoutSuccessPanel').hidden = false;
+  document.getElementById('checkoutSuccessDetail').textContent =
+    'Payment ID ' + paymentId + ' — a confirmation has been sent to ' + ((lead && lead.email) || 'your email') + '.';
+
+  trackEvent('purchase', {
+    transaction_id: paymentId,
+    value: orderData.amount / 100,
+    currency: orderData.currency,
+    items: [{ item_name: orderData.product_name }]
+  });
+}
 
 function parseAmountToCents(priceStr) {
   var clean = String(priceStr).replace(/[^0-9.]/g, '');
   var amount = parseFloat(clean);
   return Math.round((isNaN(amount) ? 0 : amount) * 100);
-}
-
-function payWithRazorpay() {
-  var note = document.getElementById('note-checkout');
-  var order = window.currentOrder || { name: 'Channel Audit', price: '$25' };
-  var lead = window.currentLead || {};
-
-  if (typeof Razorpay === 'undefined') {
-    note.textContent = "Razorpay's checkout script did not load — check your connection and try again, or message us on WhatsApp to complete your order.";
-    note.classList.add('show');
-    return false;
-  }
-
-  var options = {
-    key: RAZORPAY_KEY_ID,
-    amount: parseAmountToCents(order.price),
-    currency: 'USD',
-    name: 'ClipOrbits',
-    description: order.name,
-    prefill: { name: lead.name || '', email: lead.email || '', contact: lead.phone || '' },
-    notes: { youtube_link: lead.link || '', niche: lead.niche || '', package: order.name },
-    theme: { color: '#1663D6' },
-    handler: function (response) { showPaymentSuccess(response, lead); },
-    modal: { ondismiss: function () {} }
-  };
-
-  var rzp = new Razorpay(options);
-  rzp.on('payment.failed', function (response) {
-    note.textContent = 'Payment failed: ' + (response.error && response.error.description ? response.error.description : 'please try again.');
-    note.classList.add('show');
-  });
-  rzp.open();
-  return false;
-}
-
-function showPaymentSuccess(response, lead) {
-  document.getElementById('checkoutPaymentPanel').hidden = true;
-  document.getElementById('checkoutSuccessPanel').hidden = false;
-  var paymentId = response && response.razorpay_payment_id ? response.razorpay_payment_id : '';
-  document.getElementById('checkoutSuccessDetail').textContent =
-    'Payment ID ' + paymentId + ' — a confirmation has been sent to ' + ((lead && lead.email) || 'your email') + '.';
-
-  var order = window.currentOrder || { name: 'Channel Audit', price: '$25' };
-  lead = lead || {};
-  sendToWebhook({
-    event: 'Payment',
-    name: lead.name || '',
-    email: lead.email || '',
-    phone: lead.phone || '',
-    link: lead.link || '',
-    niche: lead.niche || '',
-    package: order.name,
-    price: order.price,
-    payment_id: paymentId,
-    source_page: 'Checkout'
-  });
-  // In production: also verify response.razorpay_payment_id / order_id / signature on your
-  // backend before treating this order as paid — this client-side event is for CRM/sheet sync only.
 }
