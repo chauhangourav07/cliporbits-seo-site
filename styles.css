@@ -123,7 +123,7 @@
 
   /* ---------- Sections / layout ---------- */
   section.page{padding:0 0 100px;}
-  .band{padding:64px 0;}
+  .band{padding-top:64px; padding-bottom:64px;}
   .band-alt{background:var(--surface-alt);}
   .band-top{border-top:1px solid var(--border);}
   .band-bottom{border-bottom:1px solid var(--border);}
@@ -140,7 +140,7 @@
   }
 
   /* ---------- Hero ---------- */
-  .hero{padding:48px 0 40px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; position:relative;}
+  .hero{padding-top:48px; padding-bottom:40px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; position:relative;}
   @media (max-width:920px){.hero{grid-template-columns:1fr;}}
   .hero p.lede{font-size:1.12rem; color:var(--ink-muted); max-width:52ch;}
 
@@ -203,7 +203,7 @@
   }
 
   /* ---------- Stats bar ---------- */
-  .stats-bar{display:flex; flex-wrap:wrap; gap:36px; justify-content:center; text-align:center; padding:40px 0;}
+  .stats-bar{display:flex; flex-wrap:wrap; gap:36px; justify-content:center; text-align:center; padding-top:40px; padding-bottom:40px;}
   .stat b{display:block; font-family:var(--font-mono); font-size:1.9rem; color:var(--accent-dark); font-variant-numeric:tabular-nums;}
   .stat span{font-size:.82rem; color:var(--ink-muted);}
 
