@@ -14,9 +14,7 @@ const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/jblxlxgjkjntcqc7k1te6h4yhq21
 // Kept in sync with create-order.js's catalog so the price logged to the Sheet always
 // reflects what the server actually charged, never a client-supplied value.
 const CATALOG = {
-  // TEMPORARY LIVE PAYMENT TEST — kept in sync with create-order.js's ₹2 test amount.
-  // MUST be reverted to { name: 'Channel Audit', amount: 2500, currency: 'USD' } right after.
-  audit: { name: 'Channel Audit', amount: 200, currency: 'INR' },
+  audit: { name: 'Channel Audit', amount: 2500, currency: 'USD' },
   starter_push: { name: 'Starter Push', amount: 4900, currency: 'USD' },
   growth_push: { name: 'Growth Push', amount: 19900, currency: 'USD' },
   starter_growth: { name: 'Starter Growth (Monthly Retainer)', amount: 34900, currency: 'USD' },
