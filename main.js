@@ -82,6 +82,33 @@ function showFormNote(id) {
       dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
     }, 100);
   });
+
+  /* ---------- Screenshot lightbox ---------- */
+  var lightboxImages = Array.prototype.map.call(track.querySelectorAll('img'), function (img) { return img.getAttribute('src'); });
+  var lightboxIndex = 0;
+  var lightbox = document.getElementById('carouselLightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+
+  window.openLightbox = function (i) {
+    lightboxIndex = i;
+    lightboxImg.src = lightboxImages[lightboxIndex];
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeLightbox = function () {
+    lightbox.hidden = true;
+    document.body.style.overflow = '';
+  };
+  window.lightboxNav = function (dir) {
+    lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+    lightboxImg.src = lightboxImages[lightboxIndex];
+  };
+  document.addEventListener('keydown', function (e) {
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+  });
 })();
 
 /* ---------- Lead modal -> checkout flow ---------- */
