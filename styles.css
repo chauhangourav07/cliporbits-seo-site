@@ -414,10 +414,10 @@
   .offer-card.dark .btn-ghost{background:transparent; color:#F6F9FC; border-color:rgba(255,255,255,.25);}
   .offer-card.dark .btn-ghost:hover{background:rgba(255,255,255,.08);}
 
-  .offer-pills{display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; margin:14px 0 6px;}
+  .offer-pills{display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; margin:14px 0 6px;}
   .offer-pill{
-    font-size:.74rem; font-weight:600; color:var(--ink-muted); background:var(--surface-alt);
-    border:1px solid var(--border); border-radius:20px; padding:5px 12px; white-space:nowrap;
+    font-size:.71rem; font-weight:600; color:var(--ink-muted); background:var(--surface-alt);
+    border:1px solid var(--border); border-radius:20px; padding:5px 9px; white-space:nowrap;
   }
   .offer-card.dark .offer-pill{color:rgba(246,249,252,.75); background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.15);}
 
