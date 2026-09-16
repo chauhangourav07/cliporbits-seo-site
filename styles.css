@@ -99,7 +99,7 @@
     nav.links.open{display:flex;}
     nav.links a, nav.links button.navlink{text-align:left; font-size:1rem; padding:12px 14px;}
     .dropdown-panel{position:static; box-shadow:none; border:none; margin-left:12px;}
-    .menu-toggle{display:block;}
+    .menu-toggle{display:block; margin-left:auto;}
     .nav-cta.desktop-only{display:none;}
     .mobile-only-cta{display:inline-flex;}
   }
