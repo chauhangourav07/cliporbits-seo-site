@@ -475,6 +475,41 @@
   .qualify ul.yes li::before{content:"\2713"; position:absolute; left:0; color:var(--accent); font-weight:700;}
   .qualify ul.no li::before{content:"\2715"; position:absolute; left:0; color:var(--ink-muted); font-weight:700;}
 
+  /* ---------- Fit check cards (homepage) ---------- */
+  .fit-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; text-align:left;}
+  @media (max-width:760px){.fit-grid{grid-template-columns:1fr;}}
+  .fit-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l); box-shadow:var(--shadow); padding:30px 28px;}
+  .fit-card.fit-yes{border-color:var(--accent); border-width:1.5px;}
+  .fit-label{
+    display:inline-block; font-family:var(--font-mono); font-size:.74rem; font-weight:700;
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px;
+  }
+  .fit-label.yes{color:var(--accent-dark);}
+  .fit-label.no{color:var(--ink-muted);}
+  .fit-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px;}
+  .fit-list li{padding-left:28px; position:relative; font-size:.96rem; line-height:1.4;}
+  .fit-list.yes li::before{content:"\2713"; position:absolute; left:0; top:0; color:var(--accent); font-weight:700;}
+  .fit-list.no li::before{content:"\2715"; position:absolute; left:0; top:0; color:var(--ink-muted); font-weight:700;}
+
+  /* ---------- Reviews (homepage) ---------- */
+  .review-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; text-align:left;}
+  @media (max-width:900px){.review-grid{grid-template-columns:1fr;}}
+  .review-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
+    box-shadow:var(--shadow); padding:28px 26px; display:flex; flex-direction:column; gap:16px;
+  }
+  .review-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .review-stars{color:var(--accent); font-size:1.05rem; letter-spacing:2px;}
+  .review-quote-mark{font-family:Georgia, 'Times New Roman', serif; font-size:2.6rem; line-height:.6; color:var(--accent-tint); font-weight:700;}
+  .review-text{font-size:.96rem; line-height:1.55; color:var(--ink); flex:1;}
+  .review-foot{display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:14px; border-top:1px solid var(--border);}
+  .review-name{font-weight:700; font-size:.92rem;}
+  .review-location{font-size:.82rem; color:var(--ink-muted); margin-top:2px;}
+  .review-badge{
+    font-size:.74rem; font-weight:600; color:var(--accent-dark); background:var(--accent-tint);
+    border:1px solid var(--border); border-radius:20px; padding:5px 12px; white-space:nowrap; flex:none;
+  }
+
   /* ---------- Blog ---------- */
   .blog-body{max-width:70ch; font-size:1.03rem;}
   .blog-body h2{margin-top:1.6em; font-size:1.5rem;}
