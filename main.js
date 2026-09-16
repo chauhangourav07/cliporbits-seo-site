@@ -113,7 +113,7 @@ function closeLeadModal() {
 }
 
 /* ---------- Make.com automation: lead capture sync to Google Sheet ---------- */
-/* NOTE: the Payment event is no longer sent from here — it is fired server-side by
+/* NOTE: the Payment event is no longer sent from here, it is fired server-side by
    /api/verify-payment.js only after the Razorpay signature has been verified, so a
    client can no longer forge a "payment succeeded" webhook call. */
 var MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/jblxlxgjkjntcqc7k1te6h4yhq21yttk';
@@ -261,7 +261,7 @@ function initCheckoutFromStorage() {
     linkEl.textContent = lead.link || '';
     summaryEl.append(nameEl, contactEl, linkEl);
   } else {
-    summaryEl.textContent = 'No order details found on this device — please start again from the Audit, Promote, or Retainer page.';
+    summaryEl.textContent = 'No order details found on this device, please start again from the Audit, Promote, or Retainer page.';
   }
 }
 
@@ -271,7 +271,7 @@ function initCheckoutFromStorage() {
    /api/verify-payment recomputes and checks the Razorpay HMAC signature. */
 
 /* Maps the display name already used across the site's buttons to the server's product
-   catalog key. The server — not this map — is what determines the amount charged. */
+   catalog key. The server, not this map, is what determines the amount charged. */
 var PRODUCT_CATALOG = {
   'Channel Audit': 'audit',
   'Starter Push': 'starter_push',
@@ -298,7 +298,7 @@ function payWithRazorpay() {
     return false;
   }
   if (typeof Razorpay === 'undefined') {
-    setCheckoutNote("Razorpay's checkout script did not load — check your connection and try again, or message us on WhatsApp to complete your order.");
+    setCheckoutNote("Razorpay's checkout script did not load, check your connection and try again, or message us on WhatsApp to complete your order.");
     return false;
   }
 
@@ -391,7 +391,7 @@ function showPaymentSuccess(paymentId, lead, orderData) {
   document.getElementById('checkoutPaymentPanel').hidden = true;
   document.getElementById('checkoutSuccessPanel').hidden = false;
   document.getElementById('checkoutSuccessDetail').textContent =
-    'Payment ID ' + paymentId + ' — a confirmation has been sent to ' + ((lead && lead.email) || 'your email') + '.';
+    'Payment ID ' + paymentId + ', a confirmation has been sent to ' + ((lead && lead.email) || 'your email') + '.';
 
   trackEvent('purchase', {
     transaction_id: paymentId,

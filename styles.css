@@ -15,11 +15,11 @@
     --radius-s: 8px;
     --radius-m: 14px;
     --radius-l: 22px;
-    --font-display:'Newsreader', Georgia, 'Times New Roman', serif;
-    --font-body:'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono:'IBM Plex Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   }
-  /* ClipOrbits commits to one visual world: bright, light, verifiable &mdash;
+  /* ClipOrbits commits to one visual world: bright, light, verifiable,
      matching every real competitor in this category. Colors are painted
      explicitly below rather than adapting to the viewer's OS theme. */
 
