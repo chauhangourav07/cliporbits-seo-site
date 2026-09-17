@@ -445,7 +445,7 @@
   .offer-pills{display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; margin:14px 0 6px; padding:0 4px;}
   .offer-pill{
     font-size:.71rem; font-weight:600; color:var(--ink-muted); background:var(--surface-alt);
-    border:1px solid var(--border); border-radius:20px; padding:5px 9px; white-space:nowrap;
+    border:1px solid var(--border); border-radius:8px; padding:5px 9px; white-space:nowrap;
   }
   .offer-card.dark .offer-pill{color:rgba(246,249,252,.75); background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.15);}
 
