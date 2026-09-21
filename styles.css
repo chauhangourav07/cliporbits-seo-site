@@ -72,7 +72,7 @@
     text-decoration:none; color:var(--ink); flex:0 0 auto;
     cursor:pointer; background:none; border:none; padding:0;
   }
-  .brand .logo-mark{width:30px; height:30px; border-radius:8px; display:inline-block; flex:0 0 auto;}
+  .brand .logo-mark{height:38px; width:auto; display:block; flex:0 0 auto;}
   nav.links{display:flex; align-items:center; gap:4px; flex:1; position:relative;}
   nav.links a, nav.links button.navlink{
     font-size:.92rem; font-weight:500; color:var(--ink-muted); text-decoration:none;
