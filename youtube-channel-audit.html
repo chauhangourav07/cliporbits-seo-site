@@ -282,11 +282,11 @@
   <div class="container band band-top">
     <h2>The lowest-risk way to find out what's holding your channel back</h2>
     <form class="lead" onsubmit="return openLeadModalFromForm(event, this, 'Channel Audit', '$25')">
-      <label>Name <input type="text" placeholder="Your name" required></label>
+      <label>Name <input type="text" placeholder="Your name" data-role="name" required></label>
       <label>Email <input type="email" placeholder="you@channel.com" required></label>
-      <label>YouTube Channel URL <input type="text" placeholder="youtube.com/@yourchannel" required></label>
+      <label>YouTube Channel URL <input type="text" placeholder="youtube.com/@yourchannel" data-role="channel-link" required></label>
       <label>What are you hoping to achieve?
-        <select><option>More views</option><option>More subscribers</option><option>Monetization eligibility</option><option>Sponsorship-ready numbers</option><option>Not sure yet</option></select>
+        <select data-role="goal"><option>More views</option><option>More subscribers</option><option>Monetization eligibility</option><option>Sponsorship-ready numbers</option><option>Not sure yet</option></select>
       </label>
       <button class="btn btn-primary" type="submit">Get My Channel Audit, $25 &rarr;</button>
     </form>
