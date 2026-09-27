@@ -38,10 +38,23 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.addEventListener('click', function (e) { if (e.target.id === 'leadModal') closeLeadModal(); });
   }
 
+  initThirdPartyTracking();
   enhanceLeadModal();
   initContactShortcuts();
   initCheckoutFromStorage();
   captureUtmParams();
+});
+
+/* ---------- GA4: first interaction with each form on the page ---------- */
+var startedForms = [];
+document.addEventListener('focusin', function (e) {
+  var form = e.target.closest ? e.target.closest('form') : null;
+  if (!form || startedForms.indexOf(form) !== -1) return;
+  startedForms.push(form);
+  trackEvent('lead_form_start', {
+    form: form.id || (form.closest('.hero') ? 'hero' : 'page'),
+    page: document.body.getAttribute('data-page') || ''
+  });
 });
 
 /* ---------- GA4: every WhatsApp link click, wherever it sits on the page ---------- */
@@ -144,7 +157,8 @@ function openLeadModal(name, price, prefillLink, prefillEmail, prefillName) {
   resetLeadModal();
   document.getElementById('leadModal').hidden = false;
   document.body.style.overflow = 'hidden';
-  trackEvent('begin_checkout', { package: name });
+  trackEvent('begin_checkout', { package: name, currency: 'USD', value: priceValue(price) });
+  loadRazorpay().catch(function () {});
 }
 
 function openLeadModalFromForm(e, formEl, name, price) {
@@ -328,10 +342,58 @@ function sendToWebhook(payload) {
   } catch (err) {}
 }
 
-/* ---------- GA4 event helper (never send PII as event params) ---------- */
+/* ---------- Tracking IDs: paste an ID here to switch that tool on across the whole site ---------- */
+var META_PIXEL_ID = '';       // Meta Events Manager -> your dataset (pixel) -> Dataset ID
+var CLARITY_PROJECT_ID = '';  // clarity.microsoft.com -> Settings -> Overview -> Project ID
+
+/* GA4 events that also go to the Meta Pixel, under Meta's standard event names. */
+var META_EVENT_FOR = {
+  begin_checkout: 'InitiateCheckout',
+  generate_lead: 'Lead',
+  purchase: 'Purchase',
+  whatsapp_click: 'Contact'
+};
+
+function initThirdPartyTracking() {
+  if (META_PIXEL_ID) loadMetaPixel();
+  if (CLARITY_PROJECT_ID) loadClarity();
+}
+
+function loadMetaPixel() {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+}
+
+function loadClarity() {
+  (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,'clarity','script',CLARITY_PROJECT_ID);
+}
+
+function priceValue(priceStr) {
+  return parseAmountToCents(priceStr) / 100;
+}
+
+/* ---------- Event helper: GA4, plus the Meta Pixel when it's on (never send PII as event params) ---------- */
 function trackEvent(name, params) {
   try {
     if (typeof gtag === 'function') gtag('event', name, params || {});
+  } catch (err) {}
+  try {
+    var metaName = META_EVENT_FOR[name];
+    if (metaName && typeof fbq === 'function') {
+      var p = params || {};
+      fbq('track', metaName, {
+        value: p.value,
+        currency: p.currency,
+        content_name: p.package || (p.items && p.items[0] ? p.items[0].item_name : undefined)
+      });
+    }
   } catch (err) {}
 }
 
@@ -431,7 +493,7 @@ function submitLeadForm(e) {
       utm_first_touch: utm.first_touch,
       utm_last_touch: utm.last_touch
     });
-    trackEvent('lead', { package: lead.package });
+    trackEvent('generate_lead', { package: lead.package, currency: 'USD', value: priceValue(lead.price) });
   }
 
   payWithRazorpay();
@@ -529,6 +591,24 @@ function getPayButton() {
     : document.getElementById('checkoutPayBtn');
 }
 
+/* Razorpay's script (~190 KB) loads only once someone opens an order, not on every page view. */
+var RAZORPAY_SRC = 'https://checkout.razorpay.com/v1/checkout.js';
+var razorpayLoading = null;
+
+function loadRazorpay() {
+  if (typeof Razorpay !== 'undefined') return Promise.resolve();
+  if (razorpayLoading) return razorpayLoading;
+  razorpayLoading = new Promise(function (resolve, reject) {
+    var script = document.createElement('script');
+    script.src = RAZORPAY_SRC;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = function () { razorpayLoading = null; reject(); };
+    document.head.appendChild(script);
+  });
+  return razorpayLoading;
+}
+
 function payWithRazorpay() {
   var order = window.currentOrder || { name: 'Channel Audit', price: '$25' };
   var lead = window.currentLead || {};
@@ -538,14 +618,12 @@ function payWithRazorpay() {
     setCheckoutNote('We could not match your package to a valid product. Please start again from the Audit, Promote, or Growth Plans page.');
     return false;
   }
-  if (typeof Razorpay === 'undefined') {
-    setCheckoutNote("Razorpay's checkout script did not load, check your connection and try again, or message us on WhatsApp to complete your order.");
-    return false;
-  }
 
   var payBtn = getPayButton();
   if (payBtn) payBtn.disabled = true;
   setCheckoutNote('Preparing your secure payment...');
+  var scriptReady = loadRazorpay();
+  scriptReady.catch(function () {});
 
   fetch('/api/create-order', {
     method: 'POST',
@@ -554,12 +632,18 @@ function payWithRazorpay() {
   })
     .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
     .then(function (result) {
-      if (payBtn) payBtn.disabled = false;
       if (!result.ok) {
+        if (payBtn) payBtn.disabled = false;
         setCheckoutNote(result.data && result.data.error ? result.data.error : 'Could not start your order. Please try again.');
         return;
       }
-      openRazorpayCheckout(result.data, productId, lead);
+      return scriptReady.then(function () {
+        if (payBtn) payBtn.disabled = false;
+        openRazorpayCheckout(result.data, productId, lead);
+      }, function () {
+        if (payBtn) payBtn.disabled = false;
+        setCheckoutNote("Razorpay's checkout script did not load, check your connection and try again, or message us on WhatsApp to complete your order.");
+      });
     })
     .catch(function () {
       if (payBtn) payBtn.disabled = false;
