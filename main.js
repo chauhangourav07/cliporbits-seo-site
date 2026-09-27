@@ -83,29 +83,31 @@ function showFormNote(id) {
   }
 }
 
-/* ---------- Proof screenshots: 6 shown, "See all" reveals the rest, tap to enlarge (homepage only; guarded) ---------- */
+/* ---------- Proof screenshots: short lists with "See all", tap any screenshot to enlarge (homepage only; guarded) ---------- */
 (function () {
   var grid = document.getElementById('proofGrid');
   if (!grid) return;
+  var section = grid.parentNode;
 
-  var more = document.getElementById('proofMore');
-  if (more) {
+  section.querySelectorAll('.proof-more').forEach(function (more) {
     more.addEventListener('click', function () {
-      grid.querySelectorAll('.proof-card[hidden]').forEach(function (card) { card.hidden = false; });
+      var list = document.getElementById(more.getAttribute('data-target'));
+      list.querySelectorAll('[hidden]').forEach(function (item) { item.hidden = false; });
       more.hidden = true;
-      trackEvent('proof_see_all', {});
+      trackEvent('proof_see_all', { list: more.getAttribute('data-target') });
     });
-  }
+  });
 
   /* ---------- Screenshot lightbox ---------- */
-  var lightboxImages = Array.prototype.map.call(grid.querySelectorAll('img'), function (img) { return img.getAttribute('src'); });
+  var openers = section.querySelectorAll('.proof-open');
+  var lightboxImages = Array.prototype.map.call(openers, function (btn) { return btn.querySelector('img').getAttribute('src'); });
   var lightboxIndex = 0;
   var lightbox = document.getElementById('carouselLightbox');
   var lightboxImg = document.getElementById('lightboxImg');
 
-  grid.addEventListener('click', function (e) {
+  section.addEventListener('click', function (e) {
     var open = e.target.closest('.proof-open');
-    if (open) openLightbox(Number(open.getAttribute('data-index')));
+    if (open) openLightbox(Array.prototype.indexOf.call(openers, open));
   });
 
   window.openLightbox = function (i) {
