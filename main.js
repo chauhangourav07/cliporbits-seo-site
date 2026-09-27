@@ -57,8 +57,10 @@ document.addEventListener('focusin', function (e) {
   });
 });
 
-/* ---------- GA4: every WhatsApp link click, wherever it sits on the page ---------- */
+/* ---------- GA4: WhatsApp link clicks, plus any element marked data-track="event_name" ---------- */
 document.addEventListener('click', function (e) {
+  var tracked = e.target.closest ? e.target.closest('[data-track]') : null;
+  if (tracked) trackEvent(tracked.getAttribute('data-track'), { page: document.body.getAttribute('data-page') || '' });
   var link = e.target.closest ? e.target.closest('a[href*="wa.me/"]') : null;
   if (link) {
     trackEvent('whatsapp_click', {
@@ -343,7 +345,7 @@ function sendToWebhook(payload) {
 }
 
 /* ---------- Tracking IDs: paste an ID here to switch that tool on across the whole site ---------- */
-var META_PIXEL_ID = '';       // Meta Events Manager -> your dataset (pixel) -> Dataset ID
+var META_PIXEL_ID = '1123299276925584';       // Meta Events Manager -> your dataset (pixel) -> Dataset ID
 var CLARITY_PROJECT_ID = 'yova0rxby5';  // clarity.microsoft.com -> Settings -> Overview -> Project ID
 
 /* GA4 events that also go to the Meta Pixel, under Meta's standard event names. */

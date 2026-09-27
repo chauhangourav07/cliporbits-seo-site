@@ -205,6 +205,11 @@
     border:1px solid var(--border); background:var(--bg); color:var(--ink); margin-bottom:10px;
   }
   .hero-form form > .btn{margin-top:2px;}
+  .hero-or{
+    display:flex; align-items:center; gap:10px; margin:12px 0;
+    font-family:var(--font-mono); font-size:.72rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-muted);
+  }
+  .hero-or::before, .hero-or::after{content:""; flex:1; height:1px; background:var(--border);}
   .trust-row{display:flex; align-items:center; gap:12px; margin-top:20px; flex-wrap:wrap;}
   .avatar-stack{display:flex;}
   .avatar-stack span{
