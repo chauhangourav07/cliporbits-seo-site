@@ -344,7 +344,7 @@ function sendToWebhook(payload) {
 
 /* ---------- Tracking IDs: paste an ID here to switch that tool on across the whole site ---------- */
 var META_PIXEL_ID = '';       // Meta Events Manager -> your dataset (pixel) -> Dataset ID
-var CLARITY_PROJECT_ID = '';  // clarity.microsoft.com -> Settings -> Overview -> Project ID
+var CLARITY_PROJECT_ID = 'yova0rxby5';  // clarity.microsoft.com -> Settings -> Overview -> Project ID
 
 /* GA4 events that also go to the Meta Pixel, under Meta's standard event names. */
 var META_EVENT_FOR = {
