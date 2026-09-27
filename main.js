@@ -83,39 +83,30 @@ function showFormNote(id) {
   }
 }
 
-/* ---------- Campaign carousel (homepage only; guarded) ---------- */
+/* ---------- Proof screenshots: 6 shown, "See all" reveals the rest, tap to enlarge (homepage only; guarded) ---------- */
 (function () {
-  var track = document.getElementById('campaignCarousel');
-  if (!track) return;
-  var dots = document.querySelectorAll('#carouselDots .carousel-dot');
+  var grid = document.getElementById('proofGrid');
+  if (!grid) return;
 
-  function stepWidth() {
-    var slide = track.querySelector('.carousel-slide');
-    var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || 0) || 0;
-    return slide.offsetWidth + gap;
+  var more = document.getElementById('proofMore');
+  if (more) {
+    more.addEventListener('click', function () {
+      grid.querySelectorAll('.proof-card[hidden]').forEach(function (card) { card.hidden = false; });
+      more.hidden = true;
+      trackEvent('proof_see_all', {});
+    });
   }
 
-  window.scrollCarousel = function (dir) {
-    track.scrollBy({ left: dir * stepWidth(), behavior: 'smooth' });
-  };
-  window.goToSlide = function (i) {
-    track.scrollTo({ left: i * stepWidth(), behavior: 'smooth' });
-  };
-
-  var scrollTimeout;
-  track.addEventListener('scroll', function () {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(function () {
-      var index = Math.round(track.scrollLeft / stepWidth());
-      dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
-    }, 100);
-  });
-
   /* ---------- Screenshot lightbox ---------- */
-  var lightboxImages = Array.prototype.map.call(track.querySelectorAll('img'), function (img) { return img.getAttribute('src'); });
+  var lightboxImages = Array.prototype.map.call(grid.querySelectorAll('img'), function (img) { return img.getAttribute('src'); });
   var lightboxIndex = 0;
   var lightbox = document.getElementById('carouselLightbox');
   var lightboxImg = document.getElementById('lightboxImg');
+
+  grid.addEventListener('click', function (e) {
+    var open = e.target.closest('.proof-open');
+    if (open) openLightbox(Number(open.getAttribute('data-index')));
+  });
 
   window.openLightbox = function (i) {
     lightboxIndex = i;

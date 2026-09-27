@@ -416,48 +416,78 @@
     <h2 style="margin-top:8px;">What Real Google Ads Reporting Looks Like</h2>
     <p class="prose" style="color:var(--ink-muted); margin-bottom:26px;">These are real performance screenshots pulled directly from Google Ads campaigns we've managed, not mockups. Client and campaign names are hidden to protect privacy. Results vary by niche, creative, targeting and budget, so treat these as real examples of the reporting you get, not a promise of your own numbers.</p>
 
-    <div class="carousel-wrap">
-      <button class="carousel-arrow prev" onclick="scrollCarousel(-1)" aria-label="Previous example">&#8249;</button>
-      <div class="carousel-track" id="campaignCarousel">
-        <div class="carousel-slide"><img src="assets/ads-proof-01.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(0)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-02.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(1)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-03.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(2)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-04.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(3)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-05.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(4)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-06.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(5)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-07.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(6)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-08.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(7)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-09.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(8)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-10.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(9)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-11.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(10)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-12.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(11)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-13.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(12)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-14.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(13)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-15.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(14)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-16.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(15)"></div>
-        <div class="carousel-slide"><img src="assets/ads-proof-17.webp" alt="Real Google Ads reporting screenshot showing campaign impressions, views and interactions" width="1900" height="650" loading="lazy" onclick="openLightbox(16)"></div>
-      </div>
-      <button class="carousel-arrow next" onclick="scrollCarousel(1)" aria-label="Next example">&#8250;</button>
+    <p class="proof-total">Across these 17 campaign reports: <b class="num">6.6M</b> TrueView views &middot; <b class="num">18.9M</b> impressions</p>
+    <div class="proof-grid" id="proofGrid">
+      <figure class="proof-card">
+        <button type="button" class="proof-open" data-index="0" aria-label="Enlarge: Google Ads report: 1.2M impressions and 644K TrueView views"><img src="assets/ads-proof-01.webp" alt="Google Ads report: 1.2M impressions and 644K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">644K</b> views &middot; <span class="num">1.2M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card">
+        <button type="button" class="proof-open" data-index="1" aria-label="Enlarge: Google Ads report: 1.46M impressions and 704K TrueView views"><img src="assets/ads-proof-07.webp" alt="Google Ads report: 1.46M impressions and 704K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">704K</b> views &middot; <span class="num">1.46M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card">
+        <button type="button" class="proof-open" data-index="2" aria-label="Enlarge: Google Ads report: 1.03M impressions and 727K TrueView views"><img src="assets/ads-proof-09.webp" alt="Google Ads report: 1.03M impressions and 727K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">727K</b> views &middot; <span class="num">1.03M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card">
+        <button type="button" class="proof-open" data-index="3" aria-label="Enlarge: Google Ads report: 893K impressions and 631K TrueView views"><img src="assets/ads-proof-17.webp" alt="Google Ads report: 893K impressions and 631K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">631K</b> views &middot; <span class="num">893K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card">
+        <button type="button" class="proof-open" data-index="4" aria-label="Enlarge: Google Ads report: 1.01M impressions and 504K TrueView views"><img src="assets/ads-proof-16.webp" alt="Google Ads report: 1.01M impressions and 504K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">504K</b> views &middot; <span class="num">1.01M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card">
+        <button type="button" class="proof-open" data-index="5" aria-label="Enlarge: Google Ads report: 1.04M impressions and 523K TrueView views"><img src="assets/ads-proof-02.webp" alt="Google Ads report: 1.04M impressions and 523K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">523K</b> views &middot; <span class="num">1.04M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="6" aria-label="Enlarge: Google Ads report: 1.08M impressions and 304K TrueView views"><img src="assets/ads-proof-03.webp" alt="Google Ads report: 1.08M impressions and 304K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">304K</b> views &middot; <span class="num">1.08M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="7" aria-label="Enlarge: Google Ads report: 453K impressions and 195K TrueView views"><img src="assets/ads-proof-04.webp" alt="Google Ads report: 453K impressions and 195K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">195K</b> views &middot; <span class="num">453K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="8" aria-label="Enlarge: Google Ads report: 561K impressions and 243K TrueView views"><img src="assets/ads-proof-05.webp" alt="Google Ads report: 561K impressions and 243K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">243K</b> views &middot; <span class="num">561K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="9" aria-label="Enlarge: Google Ads report: 817K impressions and 432K TrueView views"><img src="assets/ads-proof-06.webp" alt="Google Ads report: 817K impressions and 432K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">432K</b> views &middot; <span class="num">817K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="10" aria-label="Enlarge: Google Ads report: 904K impressions and 472K TrueView views"><img src="assets/ads-proof-08.webp" alt="Google Ads report: 904K impressions and 472K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">472K</b> views &middot; <span class="num">904K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="11" aria-label="Enlarge: Google Ads report: 466K impressions and 182K interactions"><img src="assets/ads-proof-10.webp" alt="Google Ads report: 466K impressions and 182K interactions" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">182K</b> interactions &middot; <span class="num">466K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="12" aria-label="Enlarge: Google Ads report: 541K impressions and 166K TrueView views"><img src="assets/ads-proof-11.webp" alt="Google Ads report: 541K impressions and 166K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">166K</b> views &middot; <span class="num">541K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="13" aria-label="Enlarge: Google Ads report: 602K impressions and 259K TrueView views"><img src="assets/ads-proof-12.webp" alt="Google Ads report: 602K impressions and 259K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">259K</b> views &middot; <span class="num">602K</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="14" aria-label="Enlarge: Google Ads report: 2.1M impressions and 346K TrueView views"><img src="assets/ads-proof-13.webp" alt="Google Ads report: 2.1M impressions and 346K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">346K</b> views &middot; <span class="num">2.1M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="15" aria-label="Enlarge: Google Ads report: 3.69M impressions and 197K TrueView views"><img src="assets/ads-proof-14.webp" alt="Google Ads report: 3.69M impressions and 197K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">197K</b> views &middot; <span class="num">3.69M</span> impressions</figcaption>
+      </figure>
+      <figure class="proof-card" hidden>
+        <button type="button" class="proof-open" data-index="16" aria-label="Enlarge: Google Ads report: 1.01M impressions and 269K TrueView views"><img src="assets/ads-proof-15.webp" alt="Google Ads report: 1.01M impressions and 269K TrueView views" width="1984" height="596" loading="lazy"></button>
+        <figcaption><b class="num">269K</b> views &middot; <span class="num">1.01M</span> impressions</figcaption>
+      </figure>
     </div>
-    <div class="carousel-dots" id="carouselDots">
-      <span class="carousel-dot active" onclick="goToSlide(0)"></span>
-      <span class="carousel-dot" onclick="goToSlide(1)"></span>
-      <span class="carousel-dot" onclick="goToSlide(2)"></span>
-      <span class="carousel-dot" onclick="goToSlide(3)"></span>
-      <span class="carousel-dot" onclick="goToSlide(4)"></span>
-      <span class="carousel-dot" onclick="goToSlide(5)"></span>
-      <span class="carousel-dot" onclick="goToSlide(6)"></span>
-      <span class="carousel-dot" onclick="goToSlide(7)"></span>
-      <span class="carousel-dot" onclick="goToSlide(8)"></span>
-      <span class="carousel-dot" onclick="goToSlide(9)"></span>
-      <span class="carousel-dot" onclick="goToSlide(10)"></span>
-      <span class="carousel-dot" onclick="goToSlide(11)"></span>
-      <span class="carousel-dot" onclick="goToSlide(12)"></span>
-      <span class="carousel-dot" onclick="goToSlide(13)"></span>
-      <span class="carousel-dot" onclick="goToSlide(14)"></span>
-      <span class="carousel-dot" onclick="goToSlide(15)"></span>
-      <span class="carousel-dot" onclick="goToSlide(16)"></span>
-    </div>
+    <button class="btn btn-ghost proof-more" id="proofMore" type="button">See All 17 Reports</button>
     <p class="carousel-hint">Tap any screenshot to view it full size</p>
 
     <p class="micro" style="margin-top:20px; max-width:70ch; text-align:center; margin-left:auto; margin-right:auto;">Real Google Ads reporting screenshots from campaigns we've managed for clients. Client and campaign identities are hidden to protect privacy. Past performance does not guarantee future results.</p>
@@ -478,8 +508,7 @@
   <div class="container band band-top" style="text-align:center;">
     <span class="eyebrow">Reviews</span>
     <h2 style="margin-top:8px;">Trusted by Creators Around the World</h2>
-    <p class="prose" style="color:var(--ink-muted); margin-bottom:8px; max-width:60ch; margin-left:auto; margin-right:auto;">Real reviews from real customers who promoted their YouTube videos with ClipOrbits.</p>
-    <p class="micro" style="color:var(--ink-muted); margin-bottom:26px;">Verified reviews from completed Fiverr orders for ClipOrbits YouTube promotion.</p>
+    <p class="prose" style="color:var(--ink-muted); margin-bottom:26px; max-width:60ch; margin-left:auto; margin-right:auto;">Real reviews from real customers who promoted their YouTube videos with ClipOrbits.</p>
     <div class="review-grid">
       <div class="review-card">
         <div class="review-top">
@@ -492,7 +521,6 @@
             <div class="review-name">cheneycoutend</div>
             <div class="review-location">France</div>
           </div>
-          <span class="review-badge">Verified on Fiverr</span>
         </div>
       </div>
       <div class="review-card">
@@ -506,7 +534,6 @@
             <div class="review-name">jeffmiranda14</div>
             <div class="review-location">United States</div>
           </div>
-          <span class="review-badge">Verified on Fiverr</span>
         </div>
       </div>
       <div class="review-card">
@@ -520,10 +547,10 @@
             <div class="review-name">johnanderson91</div>
             <div class="review-location">United States</div>
           </div>
-          <span class="review-badge">Verified on Fiverr</span>
         </div>
       </div>
     </div>
+    <p class="micro" style="margin-top:18px;">Reviews from completed ClipOrbits orders placed through Fiverr.</p>
   </div>
 
   <div class="container band band-top">
