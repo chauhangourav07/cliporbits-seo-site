@@ -3,8 +3,53 @@
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/cookies",
+      "destination": "/cookies.html",
+      "permanent": true
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html",
+      "permanent": true
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html",
+      "permanent": true
+    },
+    {
+      "source": "/refund",
+      "destination": "/refund.html",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html",
+      "permanent": true
+    },
+    {
+      "source": "/disclaimer",
+      "destination": "/disclaimer.html",
+      "permanent": true
+    },
+    {
+      "source": "/guarantee",
+      "destination": "/guarantee.html",
+      "permanent": true
     }
   ]
 }
