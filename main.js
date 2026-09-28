@@ -195,7 +195,7 @@ function enhanceLeadModal() {
 
   var trust = document.createElement('p');
   trust.className = 'micro modal-trust';
-  trust.textContent = 'Secure payment by Razorpay. The Verified Delivery Guarantee applies to this order.';
+  trust.textContent = 'Pay securely by card or PayPal. The Verified Delivery Guarantee applies to this order.';
   form.insertBefore(trust, note.nextSibling);
 
   var success = document.createElement('div');
