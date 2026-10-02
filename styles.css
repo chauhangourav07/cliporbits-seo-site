@@ -651,3 +651,53 @@
   .preview-note{background:var(--seal-bg); color:var(--seal); border:1px solid var(--seal-border); border-radius:8px; padding:5px 10px; font-family:var(--font-mono); font-size:.7rem;}
 
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+
+  /* ---------- Hero visual: your video running as a YouTube ad ---------- */
+  .ad-visual{position:relative; padding:36px 0 44px; max-width:470px; margin:0 auto;}
+  .yt-window{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
+    box-shadow:0 2px 4px rgba(17,21,36,.05), 0 24px 48px -16px rgba(13,62,158,.28); overflow:hidden; position:relative; z-index:1;
+  }
+  .yt-top{display:flex; align-items:center; gap:14px; padding:12px 16px; border-bottom:1px solid var(--border);}
+  .yt-logo{display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:.92rem; letter-spacing:-.02em; color:var(--ink);}
+  .yt-logo svg{width:26px; height:18px; display:block;}
+  .yt-search{flex:1; height:28px; border-radius:999px; background:var(--bg); border:1px solid var(--border); font-size:.72rem; color:var(--ink-muted); display:flex; align-items:center; padding:0 12px;}
+  .yt-player{position:relative; aspect-ratio:16/9; background:#111;}
+  .yt-player svg.yt-thumb{display:block; width:100%; height:100%;}
+  .yt-adtag{
+    position:absolute; left:12px; bottom:16px; display:inline-flex; align-items:center; gap:6px;
+    background:rgba(17,21,36,.72); color:#fff; font-size:.72rem; font-weight:600; padding:4px 9px 4px 4px; border-radius:6px;
+  }
+  .yt-adtag b{background:#FFCC00; color:#111; font-weight:800; padding:1px 6px; border-radius:3px; font-size:.7rem;}
+  .yt-progress{position:absolute; left:0; right:0; bottom:0; height:4px; background:rgba(255,255,255,.3);}
+  .yt-progress span{display:block; width:38%; height:100%; background:#FFCC00;}
+  .yt-meta{padding:14px 16px 16px;}
+  .yt-title{font-weight:700; font-size:.98rem; line-height:1.35; color:var(--ink); margin-bottom:10px;}
+  .yt-channel{display:flex; align-items:center; gap:10px; font-size:.82rem; color:var(--ink-muted);}
+  .yt-avatar{width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,#FF8A5B,#7B5BD6); flex:none;}
+  .yt-channel strong{color:var(--ink); font-weight:600; display:block; font-size:.85rem;}
+  .yt-sub{margin-left:auto; background:#111; color:#fff; font-weight:600; font-size:.75rem; padding:7px 14px; border-radius:999px;}
+  .ad-chips{display:contents;}
+  .ad-chip{
+    position:absolute; z-index:2; display:flex; align-items:center; gap:10px; background:var(--surface);
+    border:1px solid var(--border); border-radius:14px; padding:10px 14px; box-shadow:0 12px 28px -10px rgba(17,21,36,.25);
+    font-size:.8rem; color:var(--ink-muted); line-height:1.25; white-space:nowrap;
+  }
+  .ad-chip strong{display:block; color:var(--ink); font-size:.95rem; font-weight:700;}
+  .ad-chip .ico{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none;}
+  .ad-chip .ico svg{width:18px; height:18px;}
+  .chip-views{top:0; right:-14px;}
+  .chip-views .ico{background:#E6F6EC; color:#168C48;}
+  .chip-views strong{color:#168C48; font-size:1.05rem; font-family:var(--font-mono);}
+  .chip-gads{left:-36px; top:38%;}
+  .chip-gads .ico{background:var(--accent-tint); color:var(--accent-dark);}
+  .chip-yta{bottom:0; right:-14px;}
+  .chip-yta .ico{background:#FDECEC; color:#D9302C;}
+  .ad-note{font-size:.76rem; color:var(--ink-muted); text-align:center; max-width:470px; margin:4px auto 0; text-wrap:balance;}
+  .ad-note a{color:var(--accent-dark); font-weight:600; white-space:nowrap;}
+  @media (max-width:920px){
+    .ad-visual{padding:0;}
+    .ad-chips{display:grid; gap:8px; margin-top:12px;}
+    .ad-chip{position:static; padding:9px 12px; box-shadow:none; white-space:normal;}
+    .ad-note{margin-top:10px;}
+  }
