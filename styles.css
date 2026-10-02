@@ -564,6 +564,9 @@
   /* ---------- Reviews (homepage) ---------- */
   .review-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; text-align:left;}
   @media (max-width:900px){.review-grid{grid-template-columns:1fr;}}
+  .review-grid:not(.show-all) .review-card:nth-child(n+4){display:none;}
+  @media (max-width:900px){.review-grid:not(.show-all) .review-card:nth-child(n+3){display:none;}}
+  .review-more{display:flex; margin:24px auto 0;}
   .review-card{
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
     box-shadow:var(--shadow); padding:28px 26px; display:flex; flex-direction:column; gap:16px;

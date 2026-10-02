@@ -132,6 +132,19 @@ function showFormNote(id) {
   });
 })();
 
+/* ---------- Reviews: first few shown, "See all" reveals the rest (homepage only; guarded) ---------- */
+(function () {
+  var grid = document.getElementById('reviewGrid');
+  var more = document.querySelector('.review-more');
+  if (!grid || !more) return;
+  more.addEventListener('click', function () {
+    grid.classList.add('show-all');
+    more.setAttribute('aria-expanded', 'true');
+    more.hidden = true;
+    trackEvent('reviews_see_all', {});
+  });
+})();
+
 /* ---------- Lead modal -> Razorpay flow ----------
    The modal collects the lead and opens Razorpay directly; checkout.html stays as a
    fallback for anyone who lands on it from an old link or email. */
