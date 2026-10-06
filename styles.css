@@ -547,7 +547,7 @@
   .qualify ul.no li::before{content:"\2715"; position:absolute; left:0; color:var(--ink-muted); font-weight:700;}
 
   /* ---------- Fit check cards (homepage) ---------- */
-  .fit-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; text-align:left;}
+  .fit-grid{display:grid; grid-template-columns:3fr 2fr; gap:24px; text-align:left; align-items:center;}
   @media (max-width:760px){.fit-grid{grid-template-columns:1fr;}}
   .fit-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l); box-shadow:var(--shadow); padding:30px 28px;}
   .fit-card.fit-yes{border-color:var(--accent); border-width:1.5px;}
