@@ -51,10 +51,12 @@ document.addEventListener('focusin', function (e) {
   var form = e.target.closest ? e.target.closest('form') : null;
   if (!form || startedForms.indexOf(form) !== -1) return;
   startedForms.push(form);
-  trackEvent('lead_form_start', {
+  var startParams = {
     form: form.id || (form.closest('.hero') ? 'hero' : 'page'),
     page: document.body.getAttribute('data-page') || ''
-  });
+  };
+  trackEvent('lead_form_start', startParams);
+  try { if (typeof fbq === 'function') fbq('trackCustom', 'FormStart', startParams); } catch (err) {}
 });
 
 /* ---------- GA4: WhatsApp link clicks, plus any element marked data-track="event_name" ---------- */
@@ -220,7 +222,7 @@ function enhanceLeadModal() {
   var detail = document.createElement('p');
   detail.id = 'modalSuccessDetail';
   var next = document.createElement('p');
-  next.textContent = 'Gourav will personally review your order and reach out on WhatsApp within 24 hours.';
+  next.textContent = 'Gourav will personally review your order and reach out by email (or WhatsApp, if you shared it) within 24 hours.';
   var done = document.createElement('button');
   done.type = 'button';
   done.className = 'btn btn-primary btn-block';
@@ -269,6 +271,8 @@ var STICKY_CTA_BY_PAGE = {
   retainer: { label: 'Talk Through My Plan →', whatsappText: WHATSAPP_RETAINER_TEXT }
 };
 var STICKY_CTA_DEFAULT = { label: 'Get My $25 Audit →', order: ['Channel Audit', '$25'] };
+/* Ad landing pages: one CTA only, no floating WhatsApp button. */
+var LEAN_CONTACT_PAGES = { 'creator-audit': true };
 var WHATSAPP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
 
 function whatsappUrl(text) {
@@ -293,7 +297,8 @@ function initContactShortcuts() {
   var cta = STICKY_CTA_BY_PAGE[page] || STICKY_CTA_DEFAULT;
   var waText = page === 'retainer' ? WHATSAPP_RETAINER_TEXT : WHATSAPP_DEFAULT_TEXT;
 
-  document.body.appendChild(makeWhatsappLink('wa-float', 'float', waText, 'Chat on WhatsApp'));
+  var lean = !!LEAN_CONTACT_PAGES[page];
+  if (!lean) document.body.appendChild(makeWhatsappLink('wa-float', 'float', waText, 'Chat on WhatsApp'));
 
   var bar = document.createElement('div');
   bar.className = 'sticky-cta';
@@ -311,7 +316,7 @@ function initContactShortcuts() {
       openLeadModal(cta.order[0], cta.order[1]);
     });
     bar.appendChild(main);
-    bar.appendChild(makeWhatsappLink('btn sticky-cta-wa', 'sticky_bar', waText, 'WhatsApp'));
+    if (!lean) bar.appendChild(makeWhatsappLink('btn sticky-cta-wa', 'sticky_bar', waText, 'WhatsApp'));
   }
   document.body.appendChild(bar);
   document.body.classList.add('has-sticky-cta');
@@ -354,17 +359,109 @@ function sendToWebhook(payload) {
 var META_PIXEL_ID = '1123299276925584';       // Meta Events Manager -> your dataset (pixel) -> Dataset ID
 var CLARITY_PROJECT_ID = 'yova0rxby5';  // clarity.microsoft.com -> Settings -> Overview -> Project ID
 
-/* GA4 events that also go to the Meta Pixel, under Meta's standard event names. */
+/* GA4 events that also go to the Meta Pixel as-is. Lead, InitiateCheckout, Purchase and
+   ViewContent are sent explicitly below (with event IDs), not through this map. */
 var META_EVENT_FOR = {
-  begin_checkout: 'InitiateCheckout',
-  generate_lead: 'Lead',
-  purchase: 'Purchase',
   whatsapp_click: 'Contact'
 };
 
 function initThirdPartyTracking() {
-  if (META_PIXEL_ID) loadMetaPixel();
+  if (META_PIXEL_ID) {
+    loadMetaPixel();
+    trackViewContent();
+  }
   if (CLARITY_PROJECT_ID) loadClarity();
+}
+
+/* ---------- Meta conversion events ----------
+   Lead = email + YouTube link submitted (step 1), once per email per session. This is the
+   event the Meta Leads campaign optimises for. InitiateCheckout = "Continue to payment".
+   Purchase = verified Razorpay payment. Lead, InitiateCheckout and Purchase are also sent
+   server-side through /api/meta-event with the same event_id, so Meta counts each once. */
+var META_CAPI_ENDPOINT = '/api/meta-event';
+var META_LEADS_SENT_KEY = 'clipOrbitsMetaLeads';
+var META_VIEW_CONTENT_BY_PAGE = {
+  audit: { content_name: 'Channel Audit', content_category: 'audit', value: 25 },
+  'creator-audit': { content_name: 'Channel Audit', content_category: 'audit', value: 25 },
+  promote: { content_name: 'Starter Push', content_category: 'promotion', value: 49 },
+  retainer: { content_name: 'Monthly Growth Plans', content_category: 'retainer', value: 349 }
+};
+
+function newEventId(prefix) {
+  var rand = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(16).slice(2);
+  return prefix + '_' + rand;
+}
+
+function metaCategoryFor(packageName) {
+  if (packageName === 'Channel Audit') return 'audit';
+  if (/Push/.test(packageName || '')) return 'promotion';
+  if (/Retainer/.test(packageName || '')) return 'retainer';
+  return 'contact';
+}
+
+/* Browser pixel event, plus the server copy when an event ID is given. extra goes only to the server. */
+function metaTrack(eventName, params, eventId, extra) {
+  try {
+    if (typeof fbq === 'function') {
+      if (eventId) fbq('track', eventName, params || {}, { eventID: eventId });
+      else fbq('track', eventName, params || {});
+    }
+  } catch (err) {}
+  if (!eventId) return;
+  try {
+    var body = { event_name: eventName, event_id: eventId, event_source_url: window.location.href, custom_data: params || {} };
+    var more = extra || {};
+    Object.keys(more).forEach(function (k) { body[k] = more[k]; });
+    fetch(META_CAPI_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      keepalive: true
+    }).catch(function () {});
+  } catch (err) {}
+}
+
+function trackViewContent() {
+  var page = document.body.getAttribute('data-page') || '';
+  var content = META_VIEW_CONTENT_BY_PAGE[page];
+  if (!content) return;
+  metaTrack('ViewContent', {
+    content_name: content.content_name,
+    content_category: content.content_category,
+    value: content.value,
+    currency: 'USD'
+  });
+}
+
+function sendMetaLeadOnce(lead, category) {
+  var email = String(lead.email || '').trim().toLowerCase();
+  if (!email) return;
+  var sent = {};
+  try { sent = JSON.parse(sessionStorage.getItem(META_LEADS_SENT_KEY) || '{}'); } catch (err) {}
+  if (sent[email]) return;
+  sent[email] = true;
+  try { sessionStorage.setItem(META_LEADS_SENT_KEY, JSON.stringify(sent)); } catch (err) {}
+  metaTrack('Lead', {
+    content_name: lead.package || 'Contact Form',
+    content_category: category
+  }, newEventId('lead'), { email: email, phone: lead.phone || '' });
+}
+
+function sendMetaPurchase(response, productId, order, lead) {
+  metaTrack('Purchase', {
+    content_name: order.name,
+    content_type: 'product',
+    content_ids: [productId],
+    value: priceValue(order.price),
+    currency: 'USD'
+  }, 'purchase_' + response.razorpay_payment_id, {
+    email: (lead && lead.email) || '',
+    phone: (lead && lead.phone) || '',
+    product_id: productId,
+    razorpay_order_id: response.razorpay_order_id,
+    razorpay_payment_id: response.razorpay_payment_id,
+    razorpay_signature: response.razorpay_signature
+  });
 }
 
 function loadMetaPixel() {
@@ -409,7 +506,7 @@ function trackEvent(name, params) {
 function captureUtmParams() {
   try {
     var params = new URLSearchParams(window.location.search);
-    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'];
+    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid'];
     var current = {};
     var found = false;
     keys.forEach(function (k) {
@@ -461,17 +558,24 @@ function sendLeadStarted(lead) {
     utm_last_touch: utm.last_touch
   });
   trackEvent('lead_started', { package: lead.package });
+  sendMetaLeadOnce(lead, metaCategoryFor(lead.package));
+}
+
+/* Optional modal fields: not every page has all of them. */
+function fieldValue(id) {
+  var el = document.getElementById(id);
+  return el ? el.value : '';
 }
 
 function submitLeadForm(e) {
   e.preventDefault();
   var lead = {
-    name: document.getElementById('leadName').value,
-    email: document.getElementById('leadEmail').value,
-    phone: document.getElementById('leadPhone').value,
-    link: document.getElementById('leadLink').value,
-    niche: document.getElementById('leadNiche').value,
-    goal: currentGoal,
+    name: fieldValue('leadName'),
+    email: fieldValue('leadEmail'),
+    phone: fieldValue('leadPhone'),
+    link: fieldValue('leadLink'),
+    niche: fieldValue('leadNiche'),
+    goal: fieldValue('leadGoal') || currentGoal,
     package: currentOrder.name,
     price: currentOrder.price
   };
@@ -502,6 +606,14 @@ function submitLeadForm(e) {
       utm_last_touch: utm.last_touch
     });
     trackEvent('generate_lead', { package: lead.package, currency: 'USD', value: priceValue(lead.price) });
+    /* Covers visitors who opened the modal from a pricing button and skipped step 1. */
+    sendMetaLeadOnce(lead, metaCategoryFor(lead.package));
+    metaTrack('InitiateCheckout', {
+      content_name: lead.package,
+      content_category: metaCategoryFor(lead.package),
+      value: priceValue(lead.price),
+      currency: 'USD'
+    }, newEventId('checkout'), { email: lead.email, phone: lead.phone });
   }
 
   payWithRazorpay();
@@ -526,8 +638,11 @@ function submitContactForm(e) {
     price: '',
     payment_id: '',
     source_page: document.body.getAttribute('data-page') || 'Contact',
-    message: message
+    message: message,
+    utm_first_touch: getUtmData().first_touch,
+    utm_last_touch: getUtmData().last_touch
   });
+  sendMetaLeadOnce({ email: email, package: 'Contact Form' }, 'contact');
 
   document.getElementById('contactForm').reset();
   showFormNote('contact');
@@ -704,6 +819,7 @@ function verifyAndShowSuccess(response, lead, productId, orderData) {
     .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
     .then(function (result) {
       if (result.ok && result.data && result.data.verified) {
+        sendMetaPurchase(response, productId, window.currentOrder || { name: orderData.product_name, price: '$0' }, lead);
         showPaymentSuccess(response.razorpay_payment_id, lead, orderData);
       } else {
         setCheckoutNote(
