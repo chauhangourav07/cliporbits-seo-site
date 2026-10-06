@@ -657,7 +657,7 @@
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
 
   /* ---------- Hero visual: your video running as a YouTube ad ---------- */
-  .ad-visual{position:relative; padding:36px 0 44px; max-width:470px; margin:0 auto;}
+  .ad-visual{position:relative; padding:12px 0 44px; max-width:470px; margin:0 auto;}
   .yt-window{
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
     box-shadow:0 2px 4px rgba(17,21,36,.05), 0 24px 48px -16px rgba(13,62,158,.28); overflow:hidden; position:relative; z-index:1;
@@ -690,18 +690,15 @@
   .ad-chip strong{display:block; color:var(--ink); font-size:.95rem; font-weight:700;}
   .ad-chip .ico{width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none;}
   .ad-chip .ico svg{width:18px; height:18px;}
-  .chip-views{top:0; right:-14px;}
-  .chip-views .ico{background:#E6F6EC; color:#168C48;}
-  .chip-views strong{color:#168C48; font-size:1.05rem; font-family:var(--font-mono);}
-  .chip-gads{left:-36px; top:38%;}
+  .chip-gads{left:-36px; top:35%;}
   .chip-gads .ico{background:var(--accent-tint); color:var(--accent-dark);}
   .chip-yta{bottom:0; right:-14px;}
   .chip-yta .ico{background:#FDECEC; color:#D9302C;}
-  .ad-note{font-size:.76rem; color:var(--ink-muted); text-align:center; max-width:470px; margin:4px auto 0; text-wrap:balance;}
-  .ad-note a{color:var(--accent-dark); font-weight:600; white-space:nowrap;}
+  .ad-tagline{font-size:1.05rem; font-weight:700; line-height:1.4; color:var(--ink); text-align:center; max-width:470px; margin:10px auto 0; text-wrap:balance;}
+  .ad-tagline a{display:block; margin-top:6px; font-size:.82rem; color:var(--accent-dark); font-weight:600;}
   @media (max-width:920px){
     .ad-visual{padding:0;}
     .ad-chips{display:grid; gap:8px; margin-top:12px;}
     .ad-chip{position:static; padding:9px 12px; box-shadow:none; white-space:normal;}
-    .ad-note{margin-top:10px;}
+    .ad-tagline{margin-top:14px;}
   }
