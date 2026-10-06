@@ -489,6 +489,7 @@
     padding:5px 12px; border-radius:20px; box-shadow:var(--shadow);
   }
   .offer-card.dark.pricing-featured .pricing-badge{background:#5B9BFF; color:#0F1B2D;}
+  .offer-card.dark.pricing-featured .pricing-badge.pricing-badge-alt{background:#0F1B2D; color:#F6F9FC; border:1px solid rgba(246,249,252,.35);}
   @media (max-width:980px){.pricing-grid{grid-template-columns:1fr 1fr;}}
   @media (max-width:560px){.pricing-grid{grid-template-columns:1fr;}}
 
