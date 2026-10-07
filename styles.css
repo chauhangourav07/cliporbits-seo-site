@@ -474,6 +474,13 @@
   }
   .offer-card.dark.pricing-featured .pricing-badge{background:#5B9BFF; color:#0F1B2D;}
   .offer-card.dark.pricing-featured .pricing-badge.pricing-badge-alt{background:#0F1B2D; color:#F6F9FC; border:1px solid rgba(246,249,252,.35);}
+  /* ---------- Launch price (audit, until 31 Dec 2026) ---------- */
+  .offer-card.dark.pricing-featured .pricing-badge.pricing-badge-launch{background:#FFC94D; color:#1A1300;}
+  .offer-launch-note{font-size:.8rem; color:rgba(246,249,252,.7); margin-top:8px;}
+  .offer-launch-note b{color:#FFC94D; font-weight:600;}
+  .launch-note{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:.84rem; color:var(--ink-muted); margin-bottom:12px;}
+  .launch-tag{background:#FFF1C7; color:#7A5200; font-weight:700; font-size:.68rem; letter-spacing:.05em; text-transform:uppercase; padding:3px 9px; border-radius:20px;}
+  .launch-note b{color:var(--ink); font-weight:600;}
   @media (max-width:980px){.pricing-grid{grid-template-columns:1fr 1fr;}}
   @media (max-width:560px){.pricing-grid{grid-template-columns:1fr;}}
 
