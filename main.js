@@ -358,6 +358,7 @@ function sendToWebhook(payload) {
 /* ---------- Tracking IDs: paste an ID here to switch that tool on across the whole site ---------- */
 var META_PIXEL_ID = '1123299276925584';       // Meta Events Manager -> your dataset (pixel) -> Dataset ID
 var CLARITY_PROJECT_ID = 'yova0rxby5';  // clarity.microsoft.com -> Settings -> Overview -> Project ID
+var GA_MEASUREMENT_ID = 'G-SQGKC3NBCL';  // GA4; the gtag() queue itself is set up in each page's <head>
 
 /* GA4 events that also go to the Meta Pixel as-is. Lead, InitiateCheckout, Purchase and
    ViewContent are sent explicitly below (with event IDs), not through this map. */
@@ -366,11 +367,48 @@ var META_EVENT_FOR = {
 };
 
 function initThirdPartyTracking() {
+  if (GA_MEASUREMENT_ID) loadScriptLater('https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID);
   if (META_PIXEL_ID) {
     loadMetaPixel();
     trackViewContent();
   }
   if (CLARITY_PROJECT_ID) loadClarity();
+  scheduleDeferredScripts();
+}
+
+/* ---------- Deferred third-party scripts ----------
+   GA4, the Meta Pixel and Clarity are heavy, so their scripts load on the visitor's first
+   tap, scroll or key press, or 4 s after the page has loaded, whichever comes first. Their
+   stubs (gtag in <head>, fbq and clarity below) queue every event until then, so nothing
+   fired earlier is lost; only visits that leave before either trigger go unrecorded. */
+var deferredScripts = [];
+var deferredScriptsLoaded = false;
+
+function loadScriptLater(src) {
+  deferredScripts.push(src);
+  if (deferredScriptsLoaded) flushDeferredScripts();
+}
+
+function flushDeferredScripts() {
+  deferredScriptsLoaded = true;
+  while (deferredScripts.length) {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = deferredScripts.shift();
+    document.head.appendChild(s);
+  }
+}
+
+function scheduleDeferredScripts() {
+  var triggers = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
+  function go() {
+    triggers.forEach(function (t) { window.removeEventListener(t, go, true); });
+    if (!deferredScriptsLoaded) flushDeferredScripts();
+  }
+  triggers.forEach(function (t) { window.addEventListener(t, go, { capture: true, passive: true }); });
+  function afterLoad() { setTimeout(go, 4000); }
+  if (document.readyState === 'complete') afterLoad();
+  else window.addEventListener('load', afterLoad);
 }
 
 /* ---------- Meta conversion events ----------
@@ -465,19 +503,17 @@ function sendMetaPurchase(response, productId, order, lead) {
 }
 
 function loadMetaPixel() {
-  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  !function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window);
+  loadScriptLater('https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', META_PIXEL_ID);
   fbq('track', 'PageView');
 }
 
 function loadClarity() {
-  (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-  t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
-  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,'clarity','script',CLARITY_PROJECT_ID);
+  window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+  loadScriptLater('https://www.clarity.ms/tag/' + CLARITY_PROJECT_ID);
 }
 
 function priceValue(priceStr) {
