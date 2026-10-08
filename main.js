@@ -2,7 +2,17 @@ document.addEventListener('DOMContentLoaded', function () {
   var menuToggle = document.getElementById('menuToggle');
   var navLinks = document.getElementById('navLinks');
   if (menuToggle && navLinks) {
-    menuToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-controls', 'navLinks');
+    var setMenu = function (open) {
+      navLinks.classList.toggle('open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.innerHTML = open ? '&#10005;' : '&#9776;';
+    };
+    menuToggle.addEventListener('click', function () { setMenu(!navLinks.classList.contains('open')); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navLinks.classList.contains('open')) setMenu(false);
+    });
   }
 
   var learnBtn = document.getElementById('learnBtn');
@@ -366,7 +376,74 @@ var META_EVENT_FOR = {
   whatsapp_click: 'Contact'
 };
 
+/* ---------- Cookie consent (UK/EEA visitors only) ----------
+   Visitors whose browser time zone is in Europe are asked before GA4, the Meta Pixel and
+   Clarity load, since UK/EU law needs opt-in consent for these. Nothing loads, and no
+   server-side Meta events are sent, until they accept. Everyone else gets the site as
+   before, with no banner. The choice is kept in localStorage under CONSENT_KEY. */
+var CONSENT_KEY = 'clipOrbitsCookieConsent';
+
+function consentRequired() {
+  try {
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    return /^Europe\//.test(tz) || /^Atlantic\/(Canary|Madeira|Azores|Reykjavik|Faroe)$/.test(tz) || tz === 'Arctic/Longyearbyen';
+  } catch (err) { return false; }
+}
+
+function storedConsent() {
+  try { return localStorage.getItem(CONSENT_KEY); } catch (err) { return null; }
+}
+
+function trackingAllowed() {
+  return !consentRequired() || storedConsent() === 'granted';
+}
+
+function showConsentBar() {
+  var bar = document.createElement('div');
+  bar.className = 'consent-bar is-hidden';
+  bar.setAttribute('role', 'region');
+  bar.setAttribute('aria-label', 'Cookie choice');
+  bar.innerHTML = '<p>We use cookies for analytics and ad measurement (Google Analytics, Meta Pixel, Microsoft Clarity). '
+    + 'They only load if you accept. <a href="/cookies.html">Cookie Policy</a></p>'
+    + '<div class="consent-actions"><button type="button" class="btn btn-ghost btn-sm" data-consent="denied">Decline</button>'
+    + '<button type="button" class="btn btn-primary btn-sm" data-consent="granted">Accept</button></div>';
+  bar.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-consent]');
+    if (!btn) return;
+    var choice = btn.getAttribute('data-consent');
+    try { localStorage.setItem(CONSENT_KEY, choice); } catch (err) {}
+    bar.remove();
+    if (choice === 'granted') {
+      startThirdPartyTracking();
+      flushDeferredScripts();
+    }
+  });
+  document.body.appendChild(bar);
+
+  /* Like the sticky CTA bar: stay out of the way while the hero's own button is on screen. */
+  var heroButton = document.querySelector('.hero form button[type="submit"], .hero .btn-primary');
+  if (heroButton && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      bar.classList.toggle('is-hidden', entries[0].isIntersecting);
+    }).observe(heroButton);
+  } else {
+    bar.classList.remove('is-hidden');
+  }
+}
+
+/* The Cookie Policy's "Change my cookie choice" button. */
+document.addEventListener('click', function (e) {
+  if (!e.target.closest || !e.target.closest('[data-consent-reset]')) return;
+  try { localStorage.removeItem(CONSENT_KEY); } catch (err) {}
+  window.location.reload();
+});
+
 function initThirdPartyTracking() {
+  if (trackingAllowed()) startThirdPartyTracking();
+  else if (!storedConsent()) showConsentBar();
+}
+
+function startThirdPartyTracking() {
   if (GA_MEASUREMENT_ID) loadScriptLater('https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID);
   if (META_PIXEL_ID) {
     loadMetaPixel();
@@ -439,6 +516,7 @@ function metaCategoryFor(packageName) {
 
 /* Browser pixel event, plus the server copy when an event ID is given. extra goes only to the server. */
 function metaTrack(eventName, params, eventId, extra) {
+  if (!trackingAllowed()) return;
   try {
     if (typeof fbq === 'function') {
       if (eventId) fbq('track', eventName, params || {}, { eventID: eventId });

@@ -701,3 +701,40 @@
     .ad-chip{position:static; padding:9px 12px; box-shadow:none; white-space:normal;}
     .ad-tagline{margin-top:14px;}
   }
+
+  /* ---------- "What happens next" strip under the promote order form ---------- */
+  .next-steps{max-width:420px; margin-top:18px;}
+  .next-steps .eyebrow{display:block; margin-bottom:12px;}
+  .next-steps ol{list-style:none; margin:0; padding:0; display:grid; gap:14px;}
+  .next-steps li{display:grid; grid-template-columns:28px 1fr; gap:12px; align-items:start;}
+  .next-num{
+    width:28px; height:28px; border-radius:50%; background:var(--accent-tint); color:var(--accent-dark);
+    font-family:var(--font-mono); font-weight:600; font-size:.85rem; display:flex; align-items:center; justify-content:center;
+  }
+  .next-steps h3{font-size:.95rem; margin:3px 0 2px;}
+  .next-steps p{font-size:.86rem; line-height:1.5; color:var(--ink-muted); margin:0;}
+
+  /* ---------- Cookie consent bar (shown only to UK/EEA visitors, see main.js) ---------- */
+  .consent-bar{
+    position:fixed; left:22px; bottom:22px; z-index:95; max-width:390px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); box-shadow:var(--shadow);
+    padding:16px 18px; display:flex; flex-direction:column; gap:12px; transition:transform .2s ease, opacity .2s ease;
+  }
+  .consent-bar.is-hidden{transform:translateY(calc(100% + 30px)); opacity:0; pointer-events:none;}
+  .consent-bar p{font-size:.84rem; line-height:1.5; color:var(--ink-muted); margin:0;}
+  .consent-bar a{color:var(--accent-dark); font-weight:600;}
+  .consent-actions{display:flex; gap:10px;}
+  .consent-actions .btn{flex:1;}
+  @media (max-width:760px){
+    .consent-bar{left:12px; right:12px; bottom:12px; max-width:none; padding:14px 16px;}
+    body.has-sticky-cta .consent-bar{bottom:calc(78px + env(safe-area-inset-bottom));}
+  }
+
+  /* ---------- 404 page ---------- */
+  .notfound{text-align:center; max-width:640px; margin:0 auto; padding-top:72px; padding-bottom:88px;}
+  .notfound-code{font-family:var(--font-mono); font-weight:600; font-size:.9rem; letter-spacing:.12em; color:var(--accent-dark); background:var(--accent-tint); border-radius:999px; padding:6px 14px; display:inline-block;}
+  .notfound h1{margin:18px auto 14px; text-wrap:balance;}
+  .notfound p{color:var(--ink-muted); font-size:1.08rem; max-width:48ch; margin:0 auto;}
+  .notfound .cta-row{justify-content:center; margin-top:28px;}
+  .notfound .notfound-links{margin-top:28px; font-size:.9rem;}
+  .notfound-links a{color:var(--accent-dark); font-weight:600; margin:0 4px;}
