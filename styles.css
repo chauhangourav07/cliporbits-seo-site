@@ -566,6 +566,14 @@
   .review-grid:not(.show-all) .review-card:nth-child(n+4){display:none;}
   @media (max-width:900px){.review-grid:not(.show-all) .review-card:nth-child(n+3){display:none;}}
   .review-more{display:flex; margin:24px auto 0;}
+  /* Featured review (named client with a channel link): full width, 3 more cards under it before "See all". */
+  .review-card.review-featured{grid-column:1 / -1;}
+  .review-featured .review-text{max-width:80ch;}
+  .review-grid:not(.show-all) .review-card:nth-child(4){display:flex;}
+  @media (max-width:900px){.review-grid:not(.show-all) .review-card:nth-child(4){display:none;}}
+  .review-channel{font-size:.86rem; font-weight:600; color:var(--accent-dark); text-decoration:none; white-space:nowrap;}
+  .review-channel:hover{text-decoration:underline;}
+  @media (max-width:520px){.review-foot{flex-wrap:wrap;} .review-channel{white-space:normal;}}
   .review-card{
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l);
     box-shadow:var(--shadow); padding:28px 26px; display:flex; flex-direction:column; gap:16px;
