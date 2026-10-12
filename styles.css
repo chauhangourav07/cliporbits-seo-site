@@ -746,3 +746,12 @@
   .notfound .cta-row{justify-content:center; margin-top:28px;}
   .notfound .notfound-links{margin-top:28px; font-size:.9rem;}
   .notfound-links a{color:var(--accent-dark); font-weight:600; margin:0 4px;}
+
+  /* ---------- Article byline, "Key takeaways" and "Short answer" boxes (blog and FAQ pages) ---------- */
+  .byline{font-size:.9rem; color:var(--ink-muted); margin:-4px 0 26px;}
+  .byline a{color:var(--accent-dark); font-weight:600; text-decoration:none;}
+  .byline a:hover{text-decoration:underline;}
+  .callout-label{display:block; font-family:var(--font-mono); font-size:.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-dark); margin-bottom:8px;}
+  .callout ul{margin:0; padding-left:1.2em;}
+  .callout li + li{margin-top:6px;}
+  .short-answer p{margin:0; font-size:1.05rem;}
