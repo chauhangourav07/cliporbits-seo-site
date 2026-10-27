@@ -537,7 +537,26 @@
     <span class="eyebrow">Reviews</span>
     <h2 style="margin-top:8px;">Trusted by Creators Around the World</h2>
     <p class="prose" style="color:var(--ink-muted); margin-bottom:26px; max-width:60ch; margin-left:auto; margin-right:auto;">Real reviews from real ClipOrbits customers.</p>
+    <style>
+      /* Two featured reviews: keep 3 regular cards visible under them on desktop. */
+      .review-grid:not(.show-all) .review-card:nth-child(5){display:flex;}
+      @media (max-width:900px){.review-grid:not(.show-all) .review-card:nth-child(5){display:none;}}
+    </style>
     <div class="review-grid" id="reviewGrid">
+      <div class="review-card review-featured">
+        <div class="review-top">
+          <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span class="review-quote-mark">&#8221;</span>
+        </div>
+        <p class="review-text">"ClipOrbits exceeded every expectation! I entrusted Gourav with promoting my Radical Son Back to Roots book trailer on YouTube, targeting audiences in the USA, UK and Canada. The results were phenomenal, 2,971 views from 4,610 impressions, with an impressive 64% view rate! More importantly, I personally verified the YouTube analytics, and everything was delivered exactly as promised."</p>
+        <div class="review-foot">
+          <div>
+            <div class="review-name">Emmanuel Carlos St. Omer</div>
+            <div class="review-location">Author &amp; creator, Radical Son Back to Roots</div>
+          </div>
+          <a class="review-channel" href="https://www.trustpilot.com/review/cliporbits.com" target="_blank" rel="noopener">Verified review on Trustpilot &rarr;</a>
+        </div>
+      </div>
       <div class="review-card review-featured">
         <div class="review-top">
           <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
@@ -631,7 +650,7 @@
         </div>
       </div>
     </div>
-    <button class="btn btn-ghost review-more" type="button" aria-controls="reviewGrid" aria-expanded="false">See All 7 Reviews</button>
+    <button class="btn btn-ghost review-more" type="button" aria-controls="reviewGrid" aria-expanded="false">See All 8 Reviews</button>
     <p class="micro" style="margin-top:18px;">Reviews from completed ClipOrbits orders.</p>
   </div>
 
