@@ -455,9 +455,11 @@ function startThirdPartyTracking() {
 
 /* ---------- Deferred third-party scripts ----------
    GA4, the Meta Pixel and Clarity are heavy, so their scripts load on the visitor's first
-   tap, scroll or key press, or 4 s after the page has loaded, whichever comes first. Their
+   tap, scroll or key press, or right after the page's load event, whichever comes first
+   (the load event comes after the first paint, so this costs nothing on LCP). Their
    stubs (gtag in <head>, fbq and clarity below) queue every event until then, so nothing
-   fired earlier is lost; only visits that leave before either trigger go unrecorded. */
+   fired earlier is lost. It used to wait 4 s, which meant short ad visits never fired
+   PageView and Meta could not count them as Landing Page Views. */
 var deferredScripts = [];
 var deferredScriptsLoaded = false;
 
@@ -483,7 +485,7 @@ function scheduleDeferredScripts() {
     if (!deferredScriptsLoaded) flushDeferredScripts();
   }
   triggers.forEach(function (t) { window.addEventListener(t, go, { capture: true, passive: true }); });
-  function afterLoad() { setTimeout(go, 4000); }
+  function afterLoad() { setTimeout(go, 0); }
   if (document.readyState === 'complete') afterLoad();
   else window.addEventListener('load', afterLoad);
 }
