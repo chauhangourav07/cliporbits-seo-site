@@ -166,6 +166,38 @@
     </div>
   </div>
 
+  <script>
+  /* A2 hero variant. Visitors from the "two ledgers" Meta ad (utm_content starts with A2)
+     see a hero that matches that ad's promise. Everyone else sees the default hero. */
+  (function () {
+    try {
+      var content = (new URLSearchParams(window.location.search).get('utm_content') || '').toLowerCase();
+      if (content.indexOf('a2') !== 0) return;
+      var hero = document.querySelector('.hero');
+      if (!hero) return;
+      var h1 = hero.querySelector('h1');
+      var lede = hero.querySelector('.lede');
+      var points = hero.querySelectorAll('.hero-points li');
+      if (h1) h1.textContent = 'Not sure your last YouTube promotion was real? Find out before you spend again.';
+      if (lede) lede.textContent = 'A $25 channel audit, personally reviewed by a Google Ads specialist with 11+ years\' experience. Its traffic-quality check flags unusual view patterns, like very short views or views without impressions, straight from your own YouTube Analytics. PDF in 48 hours.';
+      var copy = [
+        'Whether past promotion shows up as "YouTube advertising" in your own Analytics',
+        'Which videos are actually worth promoting, and to whom',
+        'Whether paid promotion makes sense for you yet'
+      ];
+      for (var i = 0; i < points.length && i < copy.length; i++) points[i].textContent = copy[i];
+      var ul = hero.querySelector('.hero-points');
+      if (ul && !hero.querySelector('.ledger-link')) {
+        var p = document.createElement('p');
+        p.className = 'micro ledger-link';
+        p.innerHTML = 'Real promotion is checkable in two places. <a href="#two-ledgers">See how every campaign is checked &darr;</a>';
+        ul.insertAdjacentElement('afterend', p);
+      }
+      document.documentElement.setAttribute('data-hero', 'a2');
+    } catch (e) {}
+  })();
+  </script>
+
   <!-- What you get -->
   <div class="container band band-top">
     <span class="eyebrow">What's in your PDF</span>
@@ -216,7 +248,7 @@
   </div>
 
   <!-- Proof -->
-  <div class="container band band-top">
+  <div class="container band band-top" id="two-ledgers">
     <span class="eyebrow">If promotion makes sense</span>
     <h2>Every campaign is checked in two places</h2>
     <p class="prose" style="color:var(--ink-muted);">When the audit says a video is ready, we promote it as a YouTube ad through Google Ads, targeted by country, interests and topics. Nothing runs outside Google's own ad system.</p>
@@ -340,6 +372,6 @@
     </form>
   </div>
 </div>
-<script src="main.js?v=20261029b"></script>
+<script src="main.js?v=20261029"></script>
 </body>
 </html>
