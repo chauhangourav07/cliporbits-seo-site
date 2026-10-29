@@ -13,7 +13,7 @@ const ALLOWED_HOST = /(^|\.)cliporbits\.com$|\.vercel\.app$/;
 const CATALOG = {
   audit: { name: 'Channel Audit', usd: 25 },
   starter_push: { name: 'Starter Push', usd: 49 },
-  growth_push: { name: 'Growth Push', usd: 199 },
+  growth_push: { name: 'Growth Push', usd: 129 },
   starter_growth: { name: 'Starter Growth (Monthly Retainer)', usd: 349 },
   managed_growth: { name: 'Managed Growth (Monthly Retainer)', usd: 699 },
   full_channel_partner: { name: 'Full Channel Partner (Monthly Retainer)', usd: 1299 }

@@ -16,7 +16,7 @@ const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/jblxlxgjkjntcqc7k1te6h4yhq21
 const CATALOG = {
   audit: { name: 'Channel Audit', amount: 2500, currency: 'USD' },
   starter_push: { name: 'Starter Push', amount: 4900, currency: 'USD' },
-  growth_push: { name: 'Growth Push', amount: 19900, currency: 'USD' },
+  growth_push: { name: 'Growth Push', amount: 12900, currency: 'USD' },
   starter_growth: { name: 'Starter Growth (Monthly Retainer)', amount: 34900, currency: 'USD' },
   managed_growth: { name: 'Managed Growth (Monthly Retainer)', amount: 69900, currency: 'USD' },
   full_channel_partner: { name: 'Full Channel Partner (Monthly Retainer)', amount: 129900, currency: 'USD' }
