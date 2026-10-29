@@ -454,18 +454,39 @@ function startThirdPartyTracking() {
 }
 
 /* ---------- Deferred third-party scripts ----------
-   GA4, the Meta Pixel and Clarity are heavy, so their scripts load on the visitor's first
-   tap, scroll or key press, or right after the page's load event, whichever comes first
-   (the load event comes after the first paint, so this costs nothing on LCP). Their
-   stubs (gtag in <head>, fbq and clarity below) queue every event until then, so nothing
-   fired earlier is lost. It used to wait 4 s, which meant short ad visits never fired
-   PageView and Meta could not count them as Landing Page Views. */
+   GA4 and Clarity are heavy, so their scripts load on the visitor's first tap, scroll or
+   key press, or 4 s after the page has loaded, whichever comes first. Their stubs (gtag in
+   <head>, clarity below) queue every event until then, so nothing fired earlier is lost;
+   only visits that leave before either trigger go unrecorded. The Meta Pixel is the
+   exception: it loads right at the page's load event (loadScriptAtLoad), because Meta
+   only counts a Landing Page View once PageView has fired, and ad visitors who leave in
+   under 4 s were never counted. It waits for one painted frame after load, so the
+   first paint and LCP are unaffected. */
 var deferredScripts = [];
 var deferredScriptsLoaded = false;
 
 function loadScriptLater(src) {
   deferredScripts.push(src);
   if (deferredScriptsLoaded) flushDeferredScripts();
+}
+
+/* Append a script once the page has loaded AND painted a frame after that. On a page
+   this small the load event can fire before the first paint, and a script inserted
+   right at load would then run before anything is on screen (seen as a 7 s LCP in
+   Lighthouse). One animation frame + a macrotask guarantees the paint came first. */
+function loadScriptAtLoad(src) {
+  function add() {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = src;
+    document.head.appendChild(s);
+  }
+  function afterPaint() {
+    if (window.requestAnimationFrame) requestAnimationFrame(function () { setTimeout(add, 0); });
+    else setTimeout(add, 50);
+  }
+  if (document.readyState === 'complete') afterPaint();
+  else window.addEventListener('load', afterPaint);
 }
 
 function flushDeferredScripts() {
@@ -485,7 +506,7 @@ function scheduleDeferredScripts() {
     if (!deferredScriptsLoaded) flushDeferredScripts();
   }
   triggers.forEach(function (t) { window.addEventListener(t, go, { capture: true, passive: true }); });
-  function afterLoad() { setTimeout(go, 0); }
+  function afterLoad() { setTimeout(go, 4000); }
   if (document.readyState === 'complete') afterLoad();
   else window.addEventListener('load', afterLoad);
 }
@@ -586,7 +607,7 @@ function loadMetaPixel() {
   !function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window);
-  loadScriptLater('https://connect.facebook.net/en_US/fbevents.js');
+  loadScriptAtLoad('https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', META_PIXEL_ID);
   fbq('track', 'PageView');
 }
