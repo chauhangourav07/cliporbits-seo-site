@@ -28,6 +28,7 @@
 - [YouTube Promote vs Google Ads vs Hiring a Promotion Service](https://www.cliporbits.com/blog-youtube-promote-vs-google-ads-vs-promotion-service.html): All three use the same Google ad system and real viewers; they differ in control, effort and who runs the campaign. When each one makes sense.
 - [7 Red Flags That a YouTube Promotion Service Is Selling Bot Views](https://www.cliporbits.com/blog-youtube-promotion-red-flags.html): Fixed view counts, instant delivery, guaranteed subscribers, monetization packages, password requests, no mention of Google Ads, spike-then-drop reviews; plus the YouTube Analytics check.
 - [Can Buying YouTube Views Get Your Channel Banned?](https://www.cliporbits.com/blog-can-buying-youtube-views-get-your-channel-banned.html): Yes. Fake views stop counting first, then strikes can follow and repeated violations can end with the channel removed, while views from YouTube's own ad system are legitimate.
+- [Where do promoted views show up in YouTube Analytics?](https://www.cliporbits.com/blog-where-promoted-views-show-up-in-youtube-analytics.html): In YouTube Studio, as one traffic source, YouTube advertising, on the video's Reach tab. That row is the receipt for any promotion you paid for; if it stayed flat, the views didn't come from ads.
 
 ## Trust & policies
 
