@@ -66,6 +66,37 @@
   ],
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "cliporbits-seo-site.vercel.app"
+        }
+      ],
+      "destination": "https://www.cliporbits.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/",
+      "destination": "/blog.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/youtube-content-pillars",
+      "destination": "/blog-how-to-grow-a-youtube-channel.html",
+      "permanent": true
+    },
+    {
+      "source": "/blog/youtube-content-pillars/",
+      "destination": "/blog-how-to-grow-a-youtube-channel.html",
+      "permanent": true
+    },
+    {
       "source": "/cookies",
       "destination": "/cookies.html",
       "permanent": true
