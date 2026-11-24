@@ -32,6 +32,7 @@
 - [Where do promoted views show up in YouTube Analytics?](https://www.cliporbits.com/blog-where-promoted-views-show-up-in-youtube-analytics.html): In YouTube Studio, as one traffic source, YouTube advertising, on the video's Reach tab. That row is the receipt for any promotion you paid for; if it stayed flat, the views didn't come from ads.
 - [Is paying for YouTube promotion worth it?](https://www.cliporbits.com/blog-is-youtube-promotion-worth-it.html): Only when the video already holds the viewers it gets and the views have a job beyond the number, such as subscribers or link clicks. Check both in your own YouTube Analytics before you spend, then run a small test on one video.
 - [Do paid views hurt the YouTube algorithm?](https://www.cliporbits.com/blog-do-paid-views-hurt-the-youtube-algorithm.html): Not when they come from a real YouTube ad campaign; YouTube says promotions don't affect a channel's or a video's organic performance. Bought bot views break YouTube's rules and can cost you the channel.
+- [Does a YouTube promotion service need my password?](https://www.cliporbits.com/blog-does-a-youtube-promotion-service-need-your-password.html): No. A real promotion service never needs your password or a role on your channel; running your video as an ad only needs the video's public link.
 
 ## Trust & policies
 
